@@ -31,19 +31,18 @@ extern uint8_t servo_h_distances[];
 extern uint8_t servo_h_position;
 #define SERVO_H_POS_CORRECTION 10
 
-#define SERVO_PHASE_GETING_ANGLE	0
-#define SERVO_PHASE_STOPED			1
-#define SERVO_PHASE_WAITING			2
+#define SERVO_PHASE_PARK			0
+#define SERVO_PHASE_GETING_ANGLE	1
+#define SERVO_PHASE_STOPED			2
+#define SERVO_PHASE_WAITING			3
 
-
-extern boolean servo_doRotate;
-extern boolean servo_doWait;
 extern boolean servo_isWaiting;
 
 extern unsigned long servo_h_rotationTimer;
-void Task_ServoHandler(void);
-//uint8_t servo_h_getnextposition(void);
-uint8_t servo_positions_cnt(void);
 
+void servo_do_rotate(void);
+void servo_do_park(void);
+void Task_ServoHandler(void);
+uint8_t servo_positions_cnt(void);
 
 #endif /* SERVOTASK_H_ */

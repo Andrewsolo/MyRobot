@@ -7,7 +7,6 @@
 
 #include <Arduino.h>
 #include "ServoTask.h"
-//#include "Servo.h"
 
 // Public
 Servo servo_h;
@@ -16,11 +15,8 @@ uint8_t servo_h_positions[] = {90, 135, 90, 45};
 uint8_t servo_h_distances[sizeof(servo_h_positions)];
 uint8_t servo_h_position = 0;
 unsigned long servo_h_rotationTimer;	
-	
-boolean servo_doRotate = false;
-boolean servo_doWait = false;
+
 boolean servo_isWaiting = false;
-//boolean isServoPositioned = false;
 
 // Private
 uint8_t ServoPhase = SERVO_PHASE_WAITING;
@@ -28,31 +24,39 @@ uint8_t servo_h_getnextposition(void);
 
 
 void Task_ServoHandler(void){
+	uint8_t nextpos;
+
 	if (millis() >= servo_h_rotationTimer) {
 
-
 		switch(ServoPhase){
+			case SERVO_PHASE_PARK:
+				//servo_doPark = false;
+
+				servo_h.attach(SERVO_H_PIN);
+				nextpos = servo_h_positions[0] + SERVO_H_POS_CORRECTION;
+				servo_h.write(nextpos);
+
+				ServoPhase = SERVO_PHASE_STOPED;
+				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
+
+				Serial.println(String(millis()) + F("SERVO_PHASE_PARK. Position = ") + String(nextpos));
+				break;			
+			
 			case SERVO_PHASE_GETING_ANGLE:
-				if (servo_doRotate){
-					servo_doRotate = false;
-					//isServoPositioned = false;
+				//servo_doRotate = false;
 
-					servo_h.attach(SERVO_H_PIN);
-					uint8_t nextpos = servo_h_getnextposition();
-					servo_h.write(nextpos);
+				servo_h.attach(SERVO_H_PIN);
+				nextpos = servo_h_getnextposition();
+				servo_h.write(nextpos);
 
-					ServoPhase = SERVO_PHASE_STOPED;
-					servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
+				ServoPhase = SERVO_PHASE_STOPED;
+				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
 
-					Serial.println(String(millis()) + F("SERVO_PHASE_GETING_ANGLE. Next position = ") + String(nextpos));
-				}
+				Serial.println(String(millis()) + F("SERVO_PHASE_GETING_ANGLE. Next position = ") + String(nextpos));
 				break;
 
 			case SERVO_PHASE_STOPED:
 				servo_h.detach();
-				//isServoPositioned = true;
-				//isSonarStartMeasure = true;
-				//isSonarEchoChecked = false;
 
 				ServoPhase = SERVO_PHASE_WAITING;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
@@ -61,15 +65,10 @@ void Task_ServoHandler(void){
 				break;
 
 			case SERVO_PHASE_WAITING:
-				if (servo_doRotate){
-					servo_isWaiting = false;
-					ServoPhase = SERVO_PHASE_GETING_ANGLE;
-					servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
-
-					Serial.println(String(millis()) + F("SERVO_PHASE_WAITING"));
-				}
-				else
-					servo_isWaiting = true;
+				servo_isWaiting = true;
+				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
+				
+				//Serial.println(String(millis()) + F("SERVO_PHASE_WAITING"));
 				break;
 
 			default:
@@ -77,6 +76,16 @@ void Task_ServoHandler(void){
 				break;
 		}
 	}
+}
+
+void servo_do_rotate(void){
+	ServoPhase = SERVO_PHASE_GETING_ANGLE;
+	servo_isWaiting = false;
+}
+
+void servo_do_park(void){
+	ServoPhase = SERVO_PHASE_PARK;
+	servo_isWaiting = false;
 }
 
 uint8_t servo_positions_cnt(void)
@@ -91,3 +100,4 @@ uint8_t servo_h_getnextposition(void){
 
 	return (servo_h_positions[servo_h_position] + SERVO_H_POS_CORRECTION);
 }
+

@@ -25,7 +25,7 @@ void setup()
 	// Инициализация оборудования
 	serial_init();
 	motors_correctspeed(-3);
-	//servo_go_park();
+	servo_do_park();
 	/*
 	servo_h.attach(SERVO_H_PIN);
 	servo_h.write(servo_h_positions[servo_h_position] + SERVO_H_POS_CORRECTION);

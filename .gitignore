@@ -1,0 +1,12 @@
+*.o
+*.d
+*.map
+*.lss
+*.srec
+*.elf
+Makefile
+*.mk
+Thumbs.db
+[Dd]ebug*/
+[Rr]elease*/
+.vs/

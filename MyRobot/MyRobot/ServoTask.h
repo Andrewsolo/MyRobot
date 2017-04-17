@@ -29,7 +29,11 @@ extern Servo servo_v;
 //extern uint8_t servo_h_positions[];
 extern uint8_t servo_h_distances[];
 extern uint8_t servo_h_position;
-#define SERVO_H_POS_CORRECTION 10
+
+
+#define SERVO_H_POS_CORR 10		// Корректировка на погрешность установки серводвигателя
+#define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
+#define SERVO_H_POS_MAX (170 + SERVO_H_POS_CORRECTION)
 
 #define SERVO_PHASE_PARK			0
 #define SERVO_PHASE_GETING_ANGLE	1

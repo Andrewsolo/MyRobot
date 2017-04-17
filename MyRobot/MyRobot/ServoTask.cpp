@@ -33,7 +33,7 @@ void Task_ServoHandler(void){
 				//servo_doPark = false;
 
 				servo_h.attach(SERVO_H_PIN);
-				nextpos = servo_h_positions[0] + SERVO_H_POS_CORRECTION;
+				nextpos = servo_h_positions[0] + SERVO_H_POS_CORR;
 				servo_h.write(nextpos);
 
 				ServoPhase = SERVO_PHASE_STOPED;
@@ -98,6 +98,6 @@ uint8_t servo_h_getnextposition(void){
 	if (++servo_h_position >= sizeof(servo_h_positions))
 	servo_h_position = 0;
 
-	return (servo_h_positions[servo_h_position] + SERVO_H_POS_CORRECTION);
+	return (servo_h_positions[servo_h_position] + SERVO_H_POS_CORR);
 }
 

@@ -21,8 +21,7 @@ void Task_BarrierDetection(void){
 	if (millis() >= barrierdetect_Timer) {
 		barrierdetect_Timer += BARRIERDETECT_DELAY;
 
-			 
-			 
+			
 		sonar_distance = barrierdetect_get_distance();
 		Serial.print(F("Sonar distance: "));
 		Serial.println(String(sonar_distance) + F("cm"));

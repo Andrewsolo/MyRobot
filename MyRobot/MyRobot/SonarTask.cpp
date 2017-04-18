@@ -28,7 +28,7 @@ void Task_SonarHandler(void){
 void sonar_echoCheck(void) { // Timer2 interrupt (every 24uS)
 	if (sonar.check_timer()) {
 		// ДОРАБОТКА! В библиотеке возврат из check_timer() с true при таймауте с возвратом ping_result
-		servo_h_distances[servo_h_position] = sonar.ping_result / US_ROUNDTRIP_CM;
+		///servo_h_distances[servo_h_position] = sonar.ping_result / US_ROUNDTRIP_CM;
 		servo_do_rotate();
 	}
 }

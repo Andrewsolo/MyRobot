@@ -9,10 +9,10 @@
 #ifndef SERVOTASK_H_
 #define SERVOTASK_H_
 
-
-
 #include "Servo.h"
 #include "HAL.h"
+
+#include "BarrierDetectTask.h"
 
 //====== SERVO ================================================
 
@@ -25,11 +25,6 @@ extern Servo servo_v;
 
 #define SERVO_H_INTERRUPTION_STEP 30
 #define SERVO_H_POSITIONING_DELAY 300
-
-//extern uint8_t servo_h_positions[];
-extern uint8_t servo_h_distances[];
-extern uint8_t servo_h_position;
-
 
 #define SERVO_H_POS_CORR 10		// Корректировка на погрешность установки серводвигателя
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)

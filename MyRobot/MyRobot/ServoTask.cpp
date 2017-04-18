@@ -11,8 +11,7 @@
 // Public
 Servo servo_h;
 Servo servo_v;
-uint8_t servo_h_positions[] = {90, 135, 90, 45};
-uint8_t servo_h_distances[sizeof(servo_h_positions)];
+
 uint8_t servo_h_position = 0;
 unsigned long servo_h_rotationTimer;	
 
@@ -33,7 +32,7 @@ void Task_ServoHandler(void){
 				//servo_doPark = false;
 
 				servo_h.attach(SERVO_H_PIN);
-				nextpos = servo_h_positions[0] + SERVO_H_POS_CORR;
+				nextpos = barrierdetect_points[0].Position + SERVO_H_POS_CORR;
 				servo_h.write(nextpos);
 
 				ServoPhase = SERVO_PHASE_STOPED;
@@ -88,16 +87,12 @@ void servo_do_park(void){
 	servo_isWaiting = false;
 }
 
-uint8_t servo_positions_cnt(void)
-{
-	return sizeof(servo_h_positions);
-}
 
 uint8_t servo_h_getnextposition(void){
 
-	if (++servo_h_position >= sizeof(servo_h_positions))
+	if (++servo_h_position >= barrierdetect_get_servo_positions_cnt())
 	servo_h_position = 0;
 
-	return (servo_h_positions[servo_h_position] + SERVO_H_POS_CORR);
+	return (barrierdetect_points[servo_h_position].Position + SERVO_H_POS_CORR);
 }
 

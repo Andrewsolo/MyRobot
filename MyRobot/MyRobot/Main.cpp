@@ -1,16 +1,12 @@
 ﻿#include <Arduino.h>
 
-#include "Motors.h"
 #include "ServoTask.h"
 #include "SerialTask.h"
 #include "SonarTask.h"
 #include "BarrierDetectTask.h"
+#include "Motors.h"
 
 //====== Глобальные переменные
-
-
-
-
 
 
 //=====================================================================================================================================
@@ -27,14 +23,8 @@ void setup()
 	motors_correctspeed(-3);
 	barrierdetect_init();
 	
-	/*
-	servo_h.attach(SERVO_H_PIN);
-	servo_h.write(servo_h_positions[servo_h_position] + SERVO_H_POS_CORRECTION);
-	delay(200);
-	servo_h.detach();
-	isServoPositioned = true;
-	*/
-
+	//delay(1000);
+	
 	/*
 	servo_v.attach(SERVO_V_PIN);
 	servo_v.write(60);		// 100 - max?
@@ -43,17 +33,17 @@ void setup()
 	*/
 
 	// Инициализация таймеров
-	sonar_pingTimer = millis();
-	servo_h_rotationTimer = millis();
 	barrierdetect_Timer = millis();
+	servo_h_rotationTimer = millis();
+	sonar_pingTimer = millis();	
 }
 
 void loop()
 {
 	Task_SerialHandler();
+	Task_BarrierDetection();
 	Task_ServoHandler();
 	Task_SonarHandler();
-	Task_BarrierDetection();
 }
 
 //==============================================================

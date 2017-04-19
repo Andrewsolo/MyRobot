@@ -63,16 +63,11 @@ uint8_t servo_get_position(void){
 	return servo_h_position;	
 }
 
-void servo_go_position(uint8_t pos)
+void servo_goto_position(uint8_t pos)
 {
+	if(servo_isWaiting) return;
 	if(pos != servo_h_position){
 		servo_h_position = pos;	
-		servo_do_rotate();
-	}
-}
-
-void servo_do_rotate(void){
-	if(servo_isWaiting){
 		servo_phase = SERVO_PHASE_ROTATE;
 		servo_isWaiting = false;
 	}

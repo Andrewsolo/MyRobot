@@ -13,6 +13,4 @@ void serial_init(void);
 void Task_SerialHandler(void);
 void serial_send_debug(void);
 
-
-
 #endif /* SERIALHANDLER_H_ */

@@ -50,8 +50,8 @@ uint8_t motors_get_speed(void){
 void motors_set_max_speed(uint8_t spd, boolean temporary=false)
 {
 	if (!temporary) motors_max_speed = spd;
-	motor_right.set_max_speed(motors_max_speed);
-	motor_left.set_max_speed(motors_max_speed);
+	motor_right.set_max_speed(spd);
+	motor_left.set_max_speed(spd);
 }
 
 //========================================================
@@ -98,7 +98,7 @@ void motors_correctspeed(int corr)
 
 //========================================================
 void motors_go_forward(void){
-	if ((is_motors_in_right_direction(MOTOR_DIR_FORWARD, MOTOR_DIR_FORWARD))  ){// && (sonar_distance > 30)){
+	if (is_motors_in_right_direction(MOTOR_DIR_FORWARD, MOTOR_DIR_FORWARD)){
 		motors_set_direction(MOTOR_DIR_FORWARD,MOTOR_DIR_FORWARD);
 		motors_speed_up(MOTORS_ACCEL_STEP,MOTORS_ACCEL_STEP);
 	}

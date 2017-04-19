@@ -7,7 +7,6 @@
 
 #include <Arduino.h>
 #include "SonarTask.h"
-#include "ServoTask.h"
 
 // Global
 unsigned long sonar_pingTimer;		// Holds the next ping time.

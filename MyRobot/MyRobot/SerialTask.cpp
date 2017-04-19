@@ -7,6 +7,7 @@
 
 #include <Arduino.h>
 #include "SerialTask.h"
+#include "BarrierDetectTask.h"
 #include "Motors.h"
 
 boolean isRCEnabled = true;
@@ -51,13 +52,16 @@ void Task_SerialHandler(void){
 		if (isRCEnabled){
 			// Bluetooth Remote Control commands
 			if (Cmd=='F'){			// Forward command
+				barrierdetect_enable();
 				motors_go_forward();
 			}
 			else if (Cmd=='G'){		// Forward Left command
+				barrierdetect_enable();
 				motors_go_forward_and_left();
 			}
 
 			else if (Cmd=='I'){		// Forward Right command
+				barrierdetect_enable();
 				motors_go_forward_and_right();
 			}
 
@@ -89,6 +93,7 @@ void Task_SerialHandler(void){
 			//}
 
 			else if (Cmd == 'S'){
+				barrierdetect_disable();	// отключаем детектор препятствий и снимаем ограничения скорости
 				motors_speed_down(MOTORS_STOP_STEP,MOTORS_STOP_STEP);
 			}
 

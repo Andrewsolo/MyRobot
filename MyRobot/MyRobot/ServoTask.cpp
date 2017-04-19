@@ -12,62 +12,44 @@
 Servo servo_h;
 Servo servo_v;
 
-uint8_t servo_h_position = 0;
+uint8_t servo_h_position = 255;	// инициализируем вне диапазона, чтобы при инициализации произошел поворот
 unsigned long servo_h_rotationTimer;	
 
 boolean servo_isWaiting = false;
 
 // Private
-uint8_t ServoPhase = SERVO_PHASE_WAITING;
+uint8_t servo_phase = SERVO_PHASE_WAITING;
 uint8_t servo_h_getnextposition(void);
 
 
 void Task_ServoHandler(void){
-	uint8_t nextpos;
 
 	if (millis() >= servo_h_rotationTimer) {
 
-		switch(ServoPhase){
-			case SERVO_PHASE_PARK:
-				//servo_doPark = false;
+		switch(servo_phase){
+			case SERVO_PHASE_ROTATE:
 
 				servo_h.attach(SERVO_H_PIN);
-				nextpos = barrierdetect_points[0].Position + SERVO_H_POS_CORR;
-				servo_h.write(nextpos);
+				servo_h.write(servo_h_position + SERVO_H_POS_CORR);
 
-				ServoPhase = SERVO_PHASE_STOPED;
+				servo_phase = SERVO_PHASE_STOPED;
 				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
-
-				Serial.println(String(millis()) + F("SERVO_PHASE_PARK. Position = ") + String(nextpos));
-				break;			
-			
-			case SERVO_PHASE_GETING_ANGLE:
-				//servo_doRotate = false;
-
-				servo_h.attach(SERVO_H_PIN);
-				nextpos = servo_h_getnextposition();
-				servo_h.write(nextpos);
-
-				ServoPhase = SERVO_PHASE_STOPED;
-				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
-
-				Serial.println(String(millis()) + F("SERVO_PHASE_GETING_ANGLE. Next position = ") + String(nextpos));
+				Serial.println(String(millis()) + F(" SERVO_PHASE_GETING_ANGLE. Next position = ") + String(servo_h_position));
 				break;
 
 			case SERVO_PHASE_STOPED:
 				servo_h.detach();
 
-				ServoPhase = SERVO_PHASE_WAITING;
+				servo_phase = SERVO_PHASE_WAITING;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
-
-				Serial.println(String(millis()) + F("SERVO_PHASE_STOPED"));
+				Serial.println(String(millis()) + F(" SERVO_PHASE_STOPED"));
 				break;
 
 			case SERVO_PHASE_WAITING:
 				servo_isWaiting = true;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
 				
-				//Serial.println(String(millis()) + F("SERVO_PHASE_WAITING"));
+				//Serial.println(String(millis()) + F(" SERVO_PHASE_WAITING"));
 				break;
 
 			default:
@@ -77,22 +59,21 @@ void Task_ServoHandler(void){
 	}
 }
 
+uint8_t servo_get_position(void){
+	return servo_h_position;	
+}
+
+void servo_go_position(uint8_t pos)
+{
+	if(pos != servo_h_position){
+		servo_h_position = pos;	
+		servo_do_rotate();
+	}
+}
+
 void servo_do_rotate(void){
-	ServoPhase = SERVO_PHASE_GETING_ANGLE;
-	servo_isWaiting = false;
+	if(servo_isWaiting){
+		servo_phase = SERVO_PHASE_ROTATE;
+		servo_isWaiting = false;
+	}
 }
-
-void servo_do_park(void){
-	ServoPhase = SERVO_PHASE_PARK;
-	servo_isWaiting = false;
-}
-
-
-uint8_t servo_h_getnextposition(void){
-
-	if (++servo_h_position >= barrierdetect_get_servo_positions_cnt())
-	servo_h_position = 0;
-
-	return (barrierdetect_points[servo_h_position].Position + SERVO_H_POS_CORR);
-}
-

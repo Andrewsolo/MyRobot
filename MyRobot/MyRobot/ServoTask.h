@@ -30,18 +30,18 @@ extern Servo servo_v;
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
 #define SERVO_H_POS_MAX (170 + SERVO_H_POS_CORRECTION)
 
-#define SERVO_PHASE_PARK			0
-#define SERVO_PHASE_GETING_ANGLE	1
-#define SERVO_PHASE_STOPED			2
-#define SERVO_PHASE_WAITING			3
+#define SERVO_PHASE_ROTATE			0
+#define SERVO_PHASE_STOPED			1
+#define SERVO_PHASE_WAITING			2
 
 extern boolean servo_isWaiting;
 
 extern unsigned long servo_h_rotationTimer;
 
 void servo_do_rotate(void);
-void servo_do_park(void);
 void Task_ServoHandler(void);
+uint8_t servo_get_position(void);
+void servo_go_position(uint8_t);
 uint8_t servo_positions_cnt(void);
 
 #endif /* SERVOTASK_H_ */

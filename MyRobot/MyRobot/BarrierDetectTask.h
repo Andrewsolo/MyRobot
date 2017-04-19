@@ -25,9 +25,10 @@ extern strDistanceMeas barrierdetect_points[];// = {90, 0, 135, 0, 90, 0, 45, 0}
 
 
 extern unsigned long barrierdetect_Timer;
-extern boolean barrierdetect_enable;
+extern boolean barrierdetect_isEnabled;
 extern int barrierdetect_distance;
 
+void barrierdetect_init(void);
 void Task_BarrierDetection(void);
 uint8_t barrierdetect_get_servo_positions_cnt(void);
 #endif /* BARRIERDETECTTASK_H_ */

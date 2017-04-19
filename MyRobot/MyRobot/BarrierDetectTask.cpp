@@ -10,9 +10,10 @@
 #include "SonarTask.h"
 
 unsigned long barrierdetect_Timer;
-boolean barrierdetect_enable = false;
+boolean barrierdetect_isEnabled = false;
 
 strDistanceMeas barrierdetect_points[] = {90, 0, 135, 0, 90, 0, 45, 0};
+#define BARRIERDETECT_PARK_POSITION barrierdetect_points[0].Position
 
 
 int barrierdetect_distance = 0;										// TODO перенести расчет sonar_distance в модуль sonar или servo
@@ -25,6 +26,8 @@ uint8_t barrierdetect_pos_num = 0;
 #define BARRIERDETECT_PHASE_SONAR_WAIT_ECHO		4
 #define BARRIERDETECT_PHASE_CALCULATION			5
 #define BARRIERDETECT_PHASE_REACTION			6
+#define BARRIERDETECT_PHASE_SERVO_PARKING		7
+#define BARRIERDETECT_PHASE_SERVO_WAIT_PARKED	8
 uint8_t barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 
 uint8_t	barrierdetect_get_distance(void);
@@ -32,8 +35,8 @@ void	barrierdetect_motor_speed_down(void);
 
 //==============================================================
 void barrierdetect_init(void){
-
-
+	
+	//servo_go_position(BARRIERDETECT_PARK_POSITION);
 	
 }
 
@@ -45,33 +48,40 @@ void Task_BarrierDetection(void){
 		
 		switch(barrierdetect_phase){
 			case BARRIERDETECT_PHASE_IDLE:
-				if(barrierdetect_enable)
+				if(barrierdetect_isEnabled)
 					barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
-			
+				else
+					if(servo_get_position()!=BARRIERDETECT_PARK_POSITION)
+						barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_PARKING;
 				break;
 				
 			case BARRIERDETECT_PHASE_SERVO_POSITIONING:
-				//servo_go_position(barrierdetect_points[barrierdetect_pos_num]);	
+				servo_go_position(barrierdetect_points[barrierdetect_pos_num].Position);	
+				
+				
 				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_STOP;
 				break;
 				
 			case BARRIERDETECT_PHASE_SERVO_WAIT_STOP:
-				
-				barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_PING;
+				if(servo_isWaiting) barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_PING;
 				break;
 								
 			case BARRIERDETECT_PHASE_SONAR_PING:
-			
+				sonar_isPingEnabled = true;			
 				barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_WAIT_ECHO;			
 				break;
 						
 			case BARRIERDETECT_PHASE_SONAR_WAIT_ECHO:
-
-				barrierdetect_phase = BARRIERDETECT_PHASE_CALCULATION;
+				if(sonar_isEchoChecked){
+					barrierdetect_points[barrierdetect_pos_num].Distance = sonar_ping_result;					
+					if(++barrierdetect_pos_num > barrierdetect_get_servo_positions_cnt()) barrierdetect_pos_num = 0; 
+					barrierdetect_phase = BARRIERDETECT_PHASE_CALCULATION;
+				}
 				break;		
 				
 			case BARRIERDETECT_PHASE_CALCULATION:
 				barrierdetect_distance = barrierdetect_get_distance();
+				
 				Serial.print(F("Sonar distance: "));
 				Serial.println(String(barrierdetect_distance) + F("cm"));
 				
@@ -82,6 +92,16 @@ void Task_BarrierDetection(void){
 				barrierdetect_motor_speed_down();
 				
 				barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
+				break;
+
+			case BARRIERDETECT_PHASE_SERVO_PARKING:
+				servo_go_position(BARRIERDETECT_PARK_POSITION);
+						
+				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_PARKED;
+				break;
+
+			case BARRIERDETECT_PHASE_SERVO_WAIT_PARKED:
+				if(servo_isWaiting) barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 				break;
 
 								

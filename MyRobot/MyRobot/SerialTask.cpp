@@ -24,7 +24,7 @@ void serial_init(void){
 //==============================================================
 void Task_SerialHandler(void){
 	
-	if(1 || Serial.available() > 0){
+	if(Serial.available() > 0){
 
 		uint8_t Cmd = Serial.read();
 

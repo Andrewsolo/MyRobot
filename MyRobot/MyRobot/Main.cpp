@@ -21,6 +21,7 @@ void setup()
 
 	// Инициализация оборудования
 	serial_init();
+	motionautomat_init();
 	motors_correctspeed(-3);
 	barrierdetect_init();
 	

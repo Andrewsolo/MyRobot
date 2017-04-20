@@ -31,11 +31,11 @@ enum MA_commands_enum{
 	MA_COMMAND_SPEED_7,
 	MA_COMMAND_SPEED_8,
 	MA_COMMAND_SPEED_9,
-	MA_COMMAND_SPEED_10,
-	MA_COMMAND_SPEED_11};
+	MA_COMMAND_SPEED_10};
 
 extern unsigned long motionautomat_Timer;
 
+void motionautomat_init(void);
 void Task_MotionAutomat(void);
 void motionautomat_add_command(MA_commands_enum);
 

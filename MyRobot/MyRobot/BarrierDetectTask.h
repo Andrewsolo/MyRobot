@@ -29,7 +29,7 @@ extern int barrierdetect_distance;
 
 void barrierdetect_init(void);
 void Task_BarrierDetection(void);
-uint8_t barrierdetect_get_servo_positions_cnt(void);
+uint8_t barrierdetect_get_distance();
 void barrierdetect_enable(void);
 void barrierdetect_disable(void);
 #endif /* BARRIERDETECTTASK_H_ */

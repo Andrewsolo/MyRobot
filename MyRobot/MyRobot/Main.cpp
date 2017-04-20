@@ -4,6 +4,7 @@
 #include "SerialTask.h"
 #include "SonarTask.h"
 #include "BarrierDetectTask.h"
+#include "MotionAutomatTask.h"
 #include "Motors.h"
 
 //====== Глобальные переменные
@@ -33,6 +34,7 @@ void setup()
 	*/
 
 	// Инициализация таймеров
+	motionautomat_Timer = millis();
 	barrierdetect_Timer = millis();
 	servo_h_rotationTimer = millis();
 	sonar_pingTimer = millis();	
@@ -40,6 +42,7 @@ void setup()
 
 void loop()
 {
+	Task_MotionAutomat();
 	Task_SerialHandler();
 	Task_BarrierDetection();
 	Task_ServoHandler();

@@ -19,19 +19,21 @@ int barrierdetect_distance = 0;										// TODO перенести расчет sonar_distance
 uint8_t barrierdetect_pos_num = 0;
 boolean barrierdetect_isEnabled = false;
 
-#define BARRIERDETECT_PHASE_IDLE				0
-#define BARRIERDETECT_PHASE_SERVO_POSITIONING	1
-#define BARRIERDETECT_PHASE_SERVO_WAIT_STOP		2
-#define BARRIERDETECT_PHASE_SONAR_PING			3
-#define BARRIERDETECT_PHASE_SONAR_WAIT_ECHO		4
-#define BARRIERDETECT_PHASE_CALCULATION			5
-#define BARRIERDETECT_PHASE_REACTION			6
-#define BARRIERDETECT_PHASE_SERVO_PARKING		7
-#define BARRIERDETECT_PHASE_SERVO_WAIT_PARKED	8
-uint8_t barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
+enum phases{
+	BARRIERDETECT_PHASE_IDLE=0,
+	BARRIERDETECT_PHASE_SERVO_POSITIONING,
+	BARRIERDETECT_PHASE_SERVO_WAIT_STOP,
+	BARRIERDETECT_PHASE_SONAR_PING,
+	BARRIERDETECT_PHASE_SONAR_WAIT_ECHO,
+	BARRIERDETECT_PHASE_CALCULATION,
+	BARRIERDETECT_PHASE_REACTION,
+	BARRIERDETECT_PHASE_SERVO_PARKING,
+	BARRIERDETECT_PHASE_SERVO_WAIT_PARKED};
+phases barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 
-uint8_t	barrierdetect_get_distance(void);
+uint8_t	barrierdetect_calculate_distance(void);
 void	barrierdetect_motor_speed_limitation(void);
+uint8_t barrierdetect_get_servo_positions_cnt(void);
 
 //==============================================================
 void barrierdetect_init(void){
@@ -83,7 +85,7 @@ void Task_BarrierDetection(void){
 				break;		
 				
 			case BARRIERDETECT_PHASE_CALCULATION:
-				barrierdetect_distance = barrierdetect_get_distance();
+				barrierdetect_distance = barrierdetect_calculate_distance();
 				
 				Serial.print(F("Sonar distance: "));
 				Serial.println(String(barrierdetect_distance) + F("cm"));
@@ -118,8 +120,7 @@ void Task_BarrierDetection(void){
 
 //==============================================================
 // Нахождение минимального значения дистанции
-// TODO перенести расчет sonar_distance в модуль sonar или servo
-uint8_t barrierdetect_get_distance(void){
+uint8_t barrierdetect_calculate_distance(void){
 	uint8_t distance = SONAR_MAX_DISTANCE;
 		
 	for (uint8_t i=0;i<barrierdetect_get_servo_positions_cnt();i++){
@@ -127,6 +128,13 @@ uint8_t barrierdetect_get_distance(void){
 	}
 	return distance;
 }
+
+
+//==============================================================
+uint8_t barrierdetect_get_distance(){
+	return barrierdetect_distance;	
+}
+
 
 //==============================================================
 // Замедление в зависимости от расстояния до препятствия

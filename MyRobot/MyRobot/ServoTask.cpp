@@ -11,17 +11,20 @@
 // Public
 Servo servo_h;
 Servo servo_v;
-
-uint8_t servo_h_position = 255;	// инициализируем вне диапазона, чтобы при инициализации произошел поворот
 unsigned long servo_h_rotationTimer;	
-
+uint8_t servo_h_position = 255;	// инициализируем вне диапазона, чтобы при инициализации произошел поворот
 boolean servo_isWaiting = false;
 
 // Private
-uint8_t servo_phase = SERVO_PHASE_WAITING;
+enum phases{
+	SERVO_PHASE_ROTATE=0,
+	SERVO_PHASE_STOPED,
+	SERVO_PHASE_WAITING};
+phases servo_phase = SERVO_PHASE_WAITING;
+
 uint8_t servo_h_getnextposition(void);
 
-
+//==============================================================
 void Task_ServoHandler(void){
 
 	if (millis() >= servo_h_rotationTimer) {
@@ -59,10 +62,12 @@ void Task_ServoHandler(void){
 	}
 }
 
+//==============================================================
 uint8_t servo_get_position(void){
 	return servo_h_position;	
 }
 
+//==============================================================
 void servo_goto_position(uint8_t pos)
 {
 	if(servo_isWaiting) return;

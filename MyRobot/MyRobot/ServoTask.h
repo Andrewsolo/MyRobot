@@ -25,10 +25,6 @@
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
 #define SERVO_H_POS_MAX (170 + SERVO_H_POS_CORRECTION)
 
-#define SERVO_PHASE_ROTATE			0
-#define SERVO_PHASE_STOPED			1
-#define SERVO_PHASE_WAITING			2
-
 extern boolean servo_isWaiting;
 extern unsigned long servo_h_rotationTimer;
 

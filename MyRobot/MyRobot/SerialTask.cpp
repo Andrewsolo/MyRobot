@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "SerialTask.h"
 #include "BarrierDetectTask.h"
+#include "MotionAutomatTask.h"
 #include "Motors.h"
 
 boolean isRCEnabled = true;
@@ -16,14 +17,15 @@ uint8_t lastCmd;
 //==============================================================
 void serial_init(void){
 	
-	Serial.begin(115200);
+	Serial.begin(115200L);
 	Serial.println(F("Start"));	
 }
 
 //==============================================================
 void Task_SerialHandler(void){
 	
-	if(Serial.available() > 0){
+	if(1 || Serial.available() > 0){
+
 		uint8_t Cmd = Serial.read();
 
 		// Detect arduino sketch upload sequence
@@ -52,37 +54,34 @@ void Task_SerialHandler(void){
 		if (isRCEnabled){
 			// Bluetooth Remote Control commands
 			if (Cmd=='F'){			// Forward command
-				barrierdetect_enable();
-				motors_go_forward();
+				motionautomat_add_command(MA_COMMAND_FORWARD);
 			}
 			else if (Cmd=='G'){		// Forward Left command
-				barrierdetect_enable();
-				motors_go_forward_and_left();
+				motionautomat_add_command(MA_COMMAND_FORWARD_AND_LEFT);
 			}
 
 			else if (Cmd=='I'){		// Forward Right command
-				barrierdetect_enable();
-				motors_go_forward_and_right();
+				motionautomat_add_command(MA_COMMAND_FORWARD_AND_RIGHT);
 			}
 
 			else if (Cmd=='B'){		// Backward command
-				motors_go_backward();
+				motionautomat_add_command(MA_COMMAND_BACKWARD);
 			}
 
 			else if (Cmd=='H'){		// Backward Left command
-				motors_go_backward_and_left();
+				motionautomat_add_command(MA_COMMAND_BACKWARD_AND_LEFT);
 			}
 
 			else if (Cmd=='J'){		// Backward Right command
-				motors_go_backward_and_right();
+				motionautomat_add_command(MA_COMMAND_BACKWARD_AND_RIGHT);
 			}
 
 			else if (Cmd=='L'){		// Left command
-				motors_go_left();
+				motionautomat_add_command(MA_COMMAND_LEFT);
 			}
 
 			else if (Cmd=='R'){		// Right command
-				motors_go_right();
+				motionautomat_add_command(MA_COMMAND_RIGHT);
 			}
 
 			//else if (Cmd=='L'){
@@ -93,8 +92,7 @@ void Task_SerialHandler(void){
 			//}
 
 			else if (Cmd == 'S'){
-				barrierdetect_disable();	// отключаем детектор препятствий и снимаем ограничения скорости
-				motors_speed_down(MOTORS_STOP_STEP,MOTORS_STOP_STEP);
+				motionautomat_add_command(MA_COMMAND_STOP);
 			}
 
 			//-----------------------------------------
@@ -113,16 +111,15 @@ void Task_SerialHandler(void){
 			else if (Cmd=='v'){		// Horn sound stop
 			}
 
-
 			//---- команды изменения скорости ---------
 			else if ((Cmd>='0' && Cmd<='9') || Cmd == 'q'){		// Speed 0/4
 				uint8_t newspeed;
 				if (Cmd == 'q') newspeed = 10;
 				else newspeed = (uint8_t)(Cmd - '0');
-				motors_set_max_speed(newspeed*(MOTOR_SPEED_MAX-MOTOR_SPEED_MIN)/10 + MOTOR_SPEED_MIN, false);
+				motionautomat_add_command((MA_commands_enum)((uint8_t)MA_COMMAND_SPEED_0 + newspeed));
 			}
 			else{
-				motors_speed_down(20,20);	// если обнаружена неизвестная команда, то останавливаемся, чтобы не продолжать движение без соответствующей команды.
+				motionautomat_add_command(MA_COMMAND_STOP);	// если обнаружена неизвестная команда, то останавливаемся, чтобы не продолжать движение без соответствующей команды.
 			}
 
 		}	//isRCEnabled

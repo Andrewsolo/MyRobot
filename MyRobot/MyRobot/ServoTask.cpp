@@ -70,7 +70,7 @@ uint8_t servo_get_position(void){
 //==============================================================
 void servo_goto_position(uint8_t pos)
 {
-	if(servo_isWaiting) return;
+	if(!servo_isWaiting) return;
 	if(pos != servo_h_position){
 		servo_h_position = pos;	
 		servo_phase = SERVO_PHASE_ROTATE;

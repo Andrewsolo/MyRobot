@@ -91,8 +91,11 @@ void Task_MotionAutomat(void){
 void motionautomat_add_command(MA_commands_enum CMD){
 	
 	MA_commands[MA_commands_tail++] = CMD;
-	if(MA_commands_tail > sizeof(MA_commands)) MA_commands_tail = 0;
-	if(MA_commands_tail == MA_commands_head) MA_commands_head++;	// затираем команду, которую не успели обработать
+	if(MA_commands_tail == sizeof(MA_commands)) MA_commands_tail = 0;
+	if(MA_commands_tail == MA_commands_head){
+		// затираем команду, которую не успели обработать
+		if(MA_commands_head++ == sizeof(MA_commands)) MA_commands_head = 0;
+	}
 }
 
 //==============================================================
@@ -102,7 +105,7 @@ MA_commands_enum motionautomat_get_command(void){
 	if(MA_commands_head != MA_commands_tail){	// ≈сли в буфере есть команды
 		cmd = MA_commands[MA_commands_head];
 		MA_commands[MA_commands_head] = MA_COMMAND_IDLE;	// Ќеоб€зательно, так как окажетс€ вне очереди. ƒл€ отладки
-		if(++MA_commands_head > sizeof(MA_commands)) MA_commands_head = 0;
+		if(++MA_commands_head == sizeof(MA_commands)) MA_commands_head = 0;
 	}
 	return cmd;
 }

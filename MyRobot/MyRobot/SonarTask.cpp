@@ -26,7 +26,12 @@ void Task_SonarHandler(void){
 	if (millis() >= sonar_pingTimer && sonar_isPingEnabled) {
 		sonar_pingTimer += SONAR_PING_TIMEOUT;
 		sonar_isEchoChecked = false;
-		sonar.ping_timer(sonar_echoCheck); // Send out the ping
+		//sonar.ping_timer(sonar_echoCheck); // Send out the ping	//DEBUG
+		
+				sonar_ping_result = 100;
+				sonar_isEchoChecked = true;
+				sonar_isPingEnabled = false;
+		
 	}
 }
 

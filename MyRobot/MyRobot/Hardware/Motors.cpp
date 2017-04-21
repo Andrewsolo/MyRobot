@@ -10,7 +10,7 @@
 
 Motor motor_right(MOTOR_R_DIR_PIN, MOTOR_R_SPD_PIN);
 Motor motor_left(MOTOR_L_DIR_PIN, MOTOR_L_SPD_PIN);
-uint8_t motors_max_speed;	// = MOTOR_SPEED_MAX;
+uint8_t motors_max_speed = MOTOR_SPEED_MAX;	//DEBUG инициализации не было...
 
 
 //========================================================

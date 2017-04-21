@@ -11,7 +11,7 @@
  * 
  */ 
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "MotionAutomatTask.h"
 #include "BarrierDetectTask.h"
 #include "Motors.h"
@@ -33,7 +33,7 @@ void motionautomat_init(void){
 	MA_commands_head = 0;
 	MA_commands_tail = MA_commands_head;
 
-	DebugMessageLn(F("MA started"));
+	DebugMessage(String(millis()) + F(" MA started"));
 }
 
 //==============================================================
@@ -46,8 +46,7 @@ void Task_MotionAutomat(void){
 			
 			MA_commands_enum cmd = motionautomat_get_command();
 
-			DebugMessage(F("MA command = "));
-			DebugMessageLn(String(cmd));
+			DebugMessage(String(millis()) + F(" MA command = ") + String((uint8_t)cmd));
 			
 			if(cmd == MA_COMMAND_FORWARD){
 				barrierdetect_enable();

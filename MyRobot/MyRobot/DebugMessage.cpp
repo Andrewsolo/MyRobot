@@ -1,13 +1,11 @@
 #include "DebugMessage.h"
 
+
+
+/*
 void DebugMessage(String Str){
 	#ifdef DEBUG
-	Serial.print(Str);
+	Serial.println(String(millis()) + " " + Str);
 	#endif
 }
-
-void DebugMessageLn(String Str){
-	#ifdef DEBUG
-	Serial.println(Str);
-	#endif
-}
+*/

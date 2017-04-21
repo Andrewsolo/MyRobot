@@ -11,7 +11,10 @@
 
 #include "Arduino.h"
 
-void DebugMessage(String);
-void DebugMessageLn(String);
+#ifdef DEBUG
+	#define DebugMessage(Str) {Serial.println(String(millis()) + " " + Str);}
+#else
+	#define DebugMessage(Str) {}
+#endif	
 
 #endif /* DEBUGMESSAGE_H_ */

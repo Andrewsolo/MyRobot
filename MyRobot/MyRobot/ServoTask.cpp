@@ -38,7 +38,7 @@ void Task_ServoHandler(void){
 
 				servo_phase = SERVO_PHASE_STOPED;
 				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
-				DebugMessageLn(String(millis()) + F(" SERVO_PHASE_GETING_ANGLE. Next position = ") + String(servo_h_position));
+				DebugMessage(String(millis()) + F(" SERVO_PHASE_GETING_ANGLE. Next position = ") + String(servo_h_position));
 				break;
 
 			case SERVO_PHASE_STOPED:
@@ -46,7 +46,7 @@ void Task_ServoHandler(void){
 
 				servo_phase = SERVO_PHASE_WAITING;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
-				DebugMessageLn(String(millis()) + F(" SERVO_PHASE_STOPED"));
+				DebugMessage(String(millis()) + F(" SERVO_PHASE_STOPED"));
 				break;
 
 			case SERVO_PHASE_WAITING:

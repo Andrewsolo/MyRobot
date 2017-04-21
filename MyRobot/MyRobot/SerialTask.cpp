@@ -19,7 +19,7 @@ uint8_t lastCmd;
 void serial_init(void){
 	
 	Serial.begin(115200L);
-	DebugMessageLn(F("Serial started"));	
+	DebugMessage(String(millis()) + F(" Serial started"));	
 
 }
 
@@ -133,8 +133,8 @@ void Task_SerialHandler(void){
 
 //=================================================================================
 void serial_send_debug(void){
-	//DebugMessageLn(motors_get_direction_string());
-	//DebugMessageLn(motors_string_speeds());
-	DebugMessageLn(motors_string_realspeeds());
-	DebugMessageLn(motors_string_maxspeeds());
+	//DebugMessageLn(String(millis()) + " " + motors_get_direction_string());
+	//DebugMessageLn(String(millis()) + " " + motors_string_speeds());
+	DebugMessage(String(millis()) + F(" ") + motors_string_realspeeds());
+	DebugMessage(String(millis()) + F(" ") + motors_string_maxspeeds());
 }

@@ -40,7 +40,7 @@ uint8_t barrierdetect_get_servo_positions_cnt(void);
 void barrierdetect_init(void){
 	
 	//servo_go_position(BARRIERDETECT_PARK_POSITION);
-	//DebugMessageLn(F("BD started"));
+	//DebugMessageLn(String(millis()) + F(" BD started"));
 	
 }
 
@@ -53,8 +53,7 @@ void Task_BarrierDetection(void){
 		switch(barrierdetect_phase){
 			case BARRIERDETECT_PHASE_IDLE:
 
-				DebugMessage(F("BD Phase: IDLE. Enabled = "));
-				DebugMessageLn(String(barrierdetect_isEnabled));
+				DebugMessage(String(millis()) + F(" BD Phase: IDLE. Enabled = ") + String(barrierdetect_isEnabled));
 
 				if(barrierdetect_isEnabled){
 					barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
@@ -67,8 +66,7 @@ void Task_BarrierDetection(void){
 			//----------------------------------------------------				
 			case BARRIERDETECT_PHASE_SERVO_POSITIONING:
 
-				DebugMessage(F("BD Phase: SERVO_POSITIONING. Pos = "));
-				DebugMessageLn(String(barrierdetect_points[barrierdetect_pos_num].Position));
+				DebugMessage(String(millis()) + F(" BD Phase: SERVO_POSITIONING. Pos = ") + String(barrierdetect_points[barrierdetect_pos_num].Position));
 
 				servo_goto_position(barrierdetect_points[barrierdetect_pos_num].Position);	
 				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_STOP;
@@ -76,20 +74,20 @@ void Task_BarrierDetection(void){
 				
 			case BARRIERDETECT_PHASE_SERVO_WAIT_STOP:
 				if(servo_isWaiting){
-					DebugMessageLn(F("BD Phase: SERVO_WAIT_STOP. Servo waiting."));
+					DebugMessage(String(millis()) + F(" BD Phase: SERVO_WAIT_STOP. Servo waiting."));
 					barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_PING;
 				}
 				break;
 								
 			case BARRIERDETECT_PHASE_SONAR_PING:
-				DebugMessageLn(F("BD Phase: SONAR_PING."));
+				DebugMessage(String(millis()) + F(" BD Phase: SONAR_PING."));
 				sonar_isPingEnabled = true;			
 				barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_WAIT_ECHO;			
 				break;
 						
 			case BARRIERDETECT_PHASE_SONAR_WAIT_ECHO:
 				if(sonar_isEchoChecked){
-					DebugMessageLn(F("BD Phase: SONAR_WAIT_ECHO. Echo checked."));
+					DebugMessage(String(millis()) + F(" BD Phase: SONAR_WAIT_ECHO. Echo checked."));
 					barrierdetect_points[barrierdetect_pos_num].Distance = sonar_ping_result;					
 					if(++barrierdetect_pos_num > barrierdetect_get_servo_positions_cnt()) barrierdetect_pos_num = 0; 
 					barrierdetect_phase = BARRIERDETECT_PHASE_CALCULATION;
@@ -98,27 +96,26 @@ void Task_BarrierDetection(void){
 				
 			case BARRIERDETECT_PHASE_CALCULATION:
 				barrierdetect_distance = barrierdetect_calculate_distance();
-				DebugMessage(F("BD Phase: CALCULATION. Distance = "));
-				DebugMessageLn(String(barrierdetect_distance));
+				DebugMessage(String(millis()) + F(" BD Phase: CALCULATION. Distance = ") + String(barrierdetect_distance));
 				barrierdetect_phase = BARRIERDETECT_PHASE_REACTION;
 				break;								
 
 			case BARRIERDETECT_PHASE_REACTION:
-				DebugMessageLn(F("BD Phase: REACTION."));
+				DebugMessage(String(millis()) + F(" BD Phase: REACTION."));
 				barrierdetect_motor_speed_limitation();	//TODO Проблема в том, что при barrierdetect_isEnabled=false максимальная скорость не восстановится
 				barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 				break;
 			
 			//----------------------------------------------------------
 			case BARRIERDETECT_PHASE_SERVO_PARKING:
-				DebugMessageLn(F("BD Phase: SERVO_PARKING."));
+				DebugMessage(String(millis()) + F(" BD Phase: SERVO_PARKING."));
 				servo_goto_position(BARRIERDETECT_PARK_POSITION);
 				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_PARKED;
 				break;
 
 			case BARRIERDETECT_PHASE_SERVO_WAIT_PARKED:
 				if(servo_isWaiting){
-					DebugMessageLn(F("BD Phase: SERVO_WAIT_PARKED. Servo waiting."));
+					DebugMessage(String(millis()) + F(" BD Phase: SERVO_WAIT_PARKED. Servo waiting."));
 					barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 				}
 				break;

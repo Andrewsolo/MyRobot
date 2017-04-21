@@ -28,12 +28,7 @@ void setup()
 	
 	//delay(1000);
 	
-	/*
-	servo_v.attach(SERVO_V_PIN);
-	servo_v.write(60);		// 100 - max?
-	delay(200);
-	servo_v.detach();
-	*/
+
 
 	// Инициализация таймеров
 	motionautomat_Timer = millis();

@@ -19,7 +19,7 @@
 #endif
 
 #define SERVO_H_INTERRUPTION_STEP 30
-#define SERVO_H_POSITIONING_DELAY 100	//300	//DEBUG
+#define SERVO_H_POSITIONING_DELAY 300	//DEBUG
 
 #define SERVO_H_POS_CORR 10		// Корректировка на погрешность установки серводвигателя
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
@@ -28,6 +28,7 @@
 extern boolean servo_isWaiting;
 extern unsigned long servo_h_rotationTimer;
 
+void servo_v_init(void);
 void Task_ServoHandler(void);
 uint8_t servo_get_position(void);
 void servo_goto_position(uint8_t);

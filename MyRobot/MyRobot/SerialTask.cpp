@@ -26,7 +26,7 @@ void serial_init(void){
 //==============================================================
 void Task_SerialHandler(void){
 	
-	if(1 || Serial.available() > 0){	//DEBUG
+	if(Serial.available() > 0){	//DEBUG
 
 		uint8_t cmd = Serial.read();
 
@@ -121,7 +121,7 @@ void Task_SerialHandler(void){
 				motionautomat_add_command((MA_commands_enum)((uint8_t)MA_COMMAND_SPEED_0 + newspeed));
 			}
 			else{
-				//DEBUG motionautomat_add_command(MA_COMMAND_STOP);	// если обнаружена неизвестная команда, то останавливаемся, чтобы не продолжать движение без соответствующей команды.
+				motionautomat_add_command(MA_COMMAND_STOP);	// если обнаружена неизвестная команда, то останавливаемся, чтобы не продолжать движение без соответствующей команды.
 			}
 
 		}	//isRCEnabled

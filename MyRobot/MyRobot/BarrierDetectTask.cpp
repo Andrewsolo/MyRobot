@@ -52,15 +52,15 @@ void Task_BarrierDetection(void){
 		
 		switch(barrierdetect_phase){
 			case BARRIERDETECT_PHASE_IDLE:
-
-				DebugMessage(String(millis()) + F(" BD Phase: IDLE. Enabled = ") + String(barrierdetect_isEnabled));
-
 				if(barrierdetect_isEnabled){
+					DebugMessage(String(millis()) + F(" BD Phase: IDLE. Enabled = ") + String(barrierdetect_isEnabled));
 					barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
 				}
 				else
-					if(servo_get_position()!=BARRIERDETECT_PARK_POSITION)
+					if(servo_get_position()!=BARRIERDETECT_PARK_POSITION){
+						DebugMessage(String(millis()) + F(" BD Phase: IDLE. Parking"));
 						barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_PARKING;
+					}
 				break;
 				
 			//----------------------------------------------------				
@@ -89,7 +89,7 @@ void Task_BarrierDetection(void){
 				if(sonar_isEchoChecked){
 					DebugMessage(String(millis()) + F(" BD Phase: SONAR_WAIT_ECHO. Echo checked."));
 					barrierdetect_points[barrierdetect_pos_num].Distance = sonar_ping_result;					
-					if(++barrierdetect_pos_num > barrierdetect_get_servo_positions_cnt()) barrierdetect_pos_num = 0; 
+					if(++barrierdetect_pos_num >= barrierdetect_get_servo_positions_cnt()) barrierdetect_pos_num = 0; 
 					barrierdetect_phase = BARRIERDETECT_PHASE_CALCULATION;
 				}
 				break;		

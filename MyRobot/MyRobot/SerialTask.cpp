@@ -10,6 +10,7 @@
 #include "BarrierDetectTask.h"
 #include "MotionAutomatTask.h"
 #include "Motors.h"
+#include "DebugMessage.h"
 
 boolean isRCEnabled = true;
 uint8_t lastCmd;
@@ -18,7 +19,8 @@ uint8_t lastCmd;
 void serial_init(void){
 	
 	Serial.begin(115200L);
-	Serial.println(F("Start"));	
+	DebugMessageLn(F("Serial started"));	
+
 }
 
 //==============================================================
@@ -131,8 +133,8 @@ void Task_SerialHandler(void){
 
 //=================================================================================
 void serial_send_debug(void){
-	//Serial.println(motors_get_direction_string());
-	//Serial.println(motors_string_speeds());
-	Serial.println(motors_string_realspeeds());
-	Serial.println(motors_string_maxspeeds());
+	//DebugMessageLn(motors_get_direction_string());
+	//DebugMessageLn(motors_string_speeds());
+	DebugMessageLn(motors_string_realspeeds());
+	DebugMessageLn(motors_string_maxspeeds());
 }

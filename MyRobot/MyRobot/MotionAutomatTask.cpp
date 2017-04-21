@@ -15,6 +15,7 @@
 #include "MotionAutomatTask.h"
 #include "BarrierDetectTask.h"
 #include "Motors.h"
+#include "DebugMessage.h"
 
 #define MA_COMMANDS_BUFFER_SIZE 5
 MA_commands_enum MA_commands[MA_COMMANDS_BUFFER_SIZE];
@@ -30,8 +31,9 @@ MA_commands_enum motionautomat_get_command(void);
 //==============================================================
 void motionautomat_init(void){
 	MA_commands_head = 0;
-	MA_commands_tail = MA_commands_head;	
-	
+	MA_commands_tail = MA_commands_head;
+
+	DebugMessageLn(F("MA started"));
 }
 
 //==============================================================
@@ -43,6 +45,9 @@ void Task_MotionAutomat(void){
 		if(MA_commands_head != MA_commands_tail){	// Если в буфере есть команды
 			
 			MA_commands_enum cmd = motionautomat_get_command();
+
+			DebugMessage(F("MA command = "));
+			DebugMessageLn(String(cmd));
 			
 			if(cmd == MA_COMMAND_FORWARD){
 				barrierdetect_enable();

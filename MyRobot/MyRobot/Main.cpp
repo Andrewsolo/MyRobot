@@ -22,8 +22,9 @@ void setup()
 	// Инициализация оборудования
 	serial_init();
 	motionautomat_init();
-	motors_correctspeed(-3);
 	barrierdetect_init();
+
+	motors_correctspeed(-3);
 	
 	//delay(1000);
 	
@@ -43,8 +44,8 @@ void setup()
 
 void loop()
 {
-	Task_MotionAutomat();
 	Task_SerialHandler();
+	Task_MotionAutomat();
 	Task_BarrierDetection();
 	Task_ServoHandler();
 	Task_SonarHandler();

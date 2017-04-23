@@ -10,8 +10,7 @@
 
 Motor motor_right(MOTOR_R_DIR_PIN, MOTOR_R_SPD_PIN);
 Motor motor_left(MOTOR_L_DIR_PIN, MOTOR_L_SPD_PIN);
-uint8_t motors_max_speed = MOTOR_SPEED_MAX;	//DEBUG инициализации не было...
-
+uint8_t motors_max_speed = MOTOR_SPEED_MAX;
 
 //========================================================
 void motors_speed_up(uint8_t step_r, uint8_t step_l){
@@ -159,7 +158,7 @@ void motors_go_backward_and_right(void){
 	else
 		motors_speed_down(MOTORS_STOP_STEP,MOTORS_STOP_STEP);
 }
-				
+
 //========================================================
 void motors_go_left(void){
 	if (is_motors_in_right_direction(MOTOR_DIR_FORWARD, MOTOR_DIR_BACKWARD)){
@@ -195,14 +194,14 @@ String motors_string_speeds(void){
 	Str += String(motor_right.get_speed()) + F(" ") + String(motor_left.get_speed());
 	return Str;
 }
-	
+
 //========================================================
 String motors_string_realspeeds(void){
 	String Str = F(" RealSpeeds: ");
 	Str += String(motor_right.get_realspeed()) + F(" ") + String(motor_left.get_realspeed());
 	return Str;
 }
-	
+
 //========================================================
 String motors_string_maxspeeds(void){
 	String Str = F(" Max Speeds: ");

@@ -3,7 +3,7 @@
  *
  * Created: 11.04.2017 9:39:06
  *  Author: soan1006
- */ 
+ */
 
 #include <Arduino.h>
 #include "SerialTask.h"
@@ -17,16 +17,20 @@ uint8_t lastCmd;
 
 //==============================================================
 void serial_init(void){
-	
+
 	Serial.begin(115200L);
-	DebugMessage(String(millis()) + F(" Serial started"));	
+	DebugMessage(String(millis()) + F(" Serial started"));
 
 }
 
 //==============================================================
 void Task_SerialHandler(void){
-	
-	if(Serial.available() > 0){	//DEBUG
+
+#ifdef SIMULATOR
+	if(1){
+#else
+	if(Serial.available() > 0){
+#endif
 
 		uint8_t cmd = Serial.read();
 

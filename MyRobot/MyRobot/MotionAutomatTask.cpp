@@ -6,10 +6,10 @@
  *
  * Ёто некий исполнительный механизм с входным буфером дл€ кодов команд
  * ќбрабатывает по одной команде за итерацию
- *  оманды выполн€ютс€ по принципу очереди. 
+ *  оманды выполн€ютс€ по принципу очереди.
  * «аполнение очереди с удалением старых, если автомат не успевает обрабатывать.
- * 
- */ 
+ *
+ */
 
 #include <Arduino.h>
 #include "MotionAutomatTask.h"
@@ -33,24 +33,24 @@ void motionautomat_init(void){
 	MA_commands_head = 0;
 	MA_commands_tail = MA_commands_head;
 
-	DebugMessage(String(millis()) + F(" MA started"));
+	DebugMessageMA(String(millis()) + F(" MA started"));
 }
 
 //==============================================================
 void Task_MotionAutomat(void){
-	
+
 	if (millis() >= motionautomat_Timer) {
 		motionautomat_Timer += MOTIONAUTOMAT_DELAY;
-		
+
 		if(MA_commands_head != MA_commands_tail){	// ≈сли в буфере есть команды
-			
+
 			MA_commands_enum cmd = motionautomat_get_command();
 
-			DebugMessage(String(millis()) + F(" MA command = ") + String((uint8_t)cmd));
-			
+			DebugMessageMA(String(millis()) + F(" MA command = ") + String((uint8_t)cmd));
+
 			if(cmd == MA_COMMAND_FORWARD){
 				barrierdetect_enable();
-				motors_go_forward();				
+				motors_go_forward();
 			}
 			else if(cmd == MA_COMMAND_FORWARD_AND_LEFT){
 				barrierdetect_enable();
@@ -79,26 +79,26 @@ void Task_MotionAutomat(void){
 				barrierdetect_disable();	// отключаем детектор преп€тствий и снимаем ограничени€ скорости
 				motors_speed_down(MOTORS_STOP_STEP,MOTORS_STOP_STEP);
 			}
-			else if(cmd>=MA_COMMAND_SPEED_0 && cmd<=MA_COMMAND_SPEED_10){					
+			else if(cmd>=MA_COMMAND_SPEED_0 && cmd<=MA_COMMAND_SPEED_10){
 				uint8_t newspeed;
 				newspeed = (uint8_t)(cmd - (uint8_t)MA_COMMAND_SPEED_0);
 				motors_set_max_speed(newspeed*(MOTOR_SPEED_MAX-MOTOR_SPEED_MIN)/10 + MOTOR_SPEED_MIN, false);
 			}
 			else if(cmd == MA_COMMAND_IDLE){}
 		}
-	
+
 	}
 }
 
 //==============================================================
 // ƒобавление команды в конец очереди
 void motionautomat_add_command(MA_commands_enum CMD){
-	
+
 	MA_commands[MA_commands_tail++] = CMD;
 	if(MA_commands_tail == sizeof(MA_commands)) MA_commands_tail = 0;
 	if(MA_commands_tail == MA_commands_head){
 		// затираем команду, которую не успели обработать
-		if(MA_commands_head++ == sizeof(MA_commands)) MA_commands_head = 0;
+		if(++MA_commands_head == sizeof(MA_commands)) MA_commands_head = 0;
 	}
 }
 

@@ -10,9 +10,16 @@
 #include "DebugMessage.h"
 
 // Public
+#define SERVO_H_INTERRUPTION_STEP 30
+#ifdef SIMULATOR
+	#define SERVO_H_POSITIONING_DELAY 100
+#else
+	#define SERVO_H_POSITIONING_DELAY 300
+#endif
+unsigned long servo_h_rotationTimer;	
+
 Servo servo_h;
 Servo servo_v;
-unsigned long servo_h_rotationTimer;	
 uint8_t servo_h_position = 255;	// инициализируем вне диапазона, чтобы при инициализации произошел поворот
 boolean servo_isWaiting = false;
 

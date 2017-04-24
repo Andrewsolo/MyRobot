@@ -183,7 +183,7 @@ void motors_go_right(void){
 
 //========================================================
 String motors_string_direction(void){
-	String Str = F("Directions: ");
+	String Str = F(" Directions: ");
 	Str += String(motor_right.get_direction()) + F(" ") + String(motor_left.get_direction());
 	return Str;
 }

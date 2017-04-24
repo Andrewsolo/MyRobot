@@ -12,7 +12,9 @@
 #include "Motors.h"
 #include "DebugMessage.h"
 
+#define SERIAL_DELAY 10
 unsigned long serial_Timer;
+
 boolean isRCEnabled = true;
 uint8_t lastCmd;
 
@@ -140,8 +142,8 @@ void Task_SerialHandler(void){
 			lastCmd = cmd;
 			//DebugMessageSERIALLn(String(millis()) + " " + motors_get_direction_string());
 			//DebugMessageSERIALLn(String(millis()) + " " + motors_string_speeds());
-			DebugMessageSERIAL(String(millis()) + F(" ") + motors_string_realspeeds());
-			DebugMessageSERIAL(String(millis()) + F(" ") + motors_string_maxspeeds());
+			//DebugMessageSERIAL(String(millis()) + F(" ") + motors_string_realspeeds());
+			//DebugMessageSERIAL(String(millis()) + F(" ") + motors_string_maxspeeds());
 		}
 	}
 }

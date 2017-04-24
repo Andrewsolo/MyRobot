@@ -9,29 +9,30 @@
 #include "SonarTask.h"
 
 // Global
-unsigned long sonar_pingTimer;		// Holds the next ping time.
-unsigned long sonar_ping_result = 0;
-boolean sonar_isPingEnabled = false;
-boolean sonar_isEchoChecked = true;
+#define SONAR_PING_TIMEOUT 50			// Если не получим отклик, то через это время будет отправлен еще один ping
+unsigned long	sonar_pingTimer;		// Holds the next ping time.
+
+unsigned long	sonar_ping_result = 0;
+boolean			sonar_isPingEnabled = false;
+boolean			sonar_isEchoChecked = true;
 
 
 // Local
 NewPing sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_MAX_DISTANCE);
-
-void sonar_echoCheck(void);
+void	sonar_echoCheck(void);
 
 //==============================================================
 void Task_SonarHandler(void){
 
 	if (millis() >= sonar_pingTimer && sonar_isPingEnabled) {
 		sonar_pingTimer = millis() + SONAR_PING_TIMEOUT;
+#ifndef SIMULATOR
 		sonar_isEchoChecked = false;
-#ifdef SIMULATOR
+		sonar.ping_timer(sonar_echoCheck); // Send out the ping
+#else		
 		sonar_ping_result = 100;
 		sonar_isEchoChecked = true;
 		sonar_isPingEnabled = false;
-#else
-		sonar.ping_timer(sonar_echoCheck); // Send out the ping
 #endif
 
 	}

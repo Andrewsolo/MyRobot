@@ -18,13 +18,6 @@
 #error "SERVO Pins not defined!"
 #endif
 
-#define SERVO_H_INTERRUPTION_STEP 30
-#ifdef SIMULATOR
-	#define SERVO_H_POSITIONING_DELAY 100
-#else
-	#define SERVO_H_POSITIONING_DELAY 300
-#endif
-
 #define SERVO_H_POS_CORR 10		// Корректировка на погрешность установки серводвигателя
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
 #define SERVO_H_POS_MAX (170 + SERVO_H_POS_CORRECTION)

@@ -11,12 +11,13 @@
 #include "Motors.h"
 #include "DebugMessage.h"
 
+#define BARRIERDETECT_DELAY 50
 unsigned long barrierdetect_Timer;
 
 strDistanceMeas barrierdetect_points[] = {90, 0, 135, 0, 90, 0, 45, 0};
 #define BARRIERDETECT_PARK_POSITION barrierdetect_points[0].Position
 
-int barrierdetect_distance = 0;										// TODO перенести расчет sonar_distance в модуль sonar или servo
+int		barrierdetect_distance = 0;										// TODO перенести расчет sonar_distance в модуль sonar или servo
 uint8_t barrierdetect_pos_num = 0;
 boolean barrierdetect_isEnabled = false;
 
@@ -171,6 +172,8 @@ void barrierdetect_motor_speed_limitation(void){
 		// пониженная скорость
 		motors_set_max_speed(BARRIERDETECT_SPEED_LOWER, true);
 	}
+	
+	DebugMessageBD(String(millis()) + motors_string_maxspeeds());
 }
 
 //==============================================================

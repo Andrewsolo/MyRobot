@@ -16,6 +16,7 @@
 #include "BarrierDetectTask.h"
 #include "Motors.h"
 #include "DebugMessage.h"
+#include <stdint-gcc.h>
 
 #define MA_COMMANDS_BUFFER_SIZE 5
 MA_commands_enum MA_commands[MA_COMMANDS_BUFFER_SIZE];
@@ -82,6 +83,8 @@ void Task_MotionAutomat(void){
 				motors_set_max_speed(newspeed*(MOTOR_SPEED_MAX-MOTOR_SPEED_MIN)/10 + MOTOR_SPEED_MIN, false);
 			}
 			else if(cmd == MA_COMMAND_IDLE){}
+				
+			DebugMessageMA(String(millis()) + motors_string_realspeeds());	
 		}
 
 	}
@@ -91,7 +94,7 @@ void Task_MotionAutomat(void){
 // Добавление команды в конец очереди
 void motionautomat_add_command(MA_commands_enum cmd){
 
-	DebugMessageMA(String(millis()) + F(" MA add cmd = ") + String((uint8_t)cmd));
+	DebugMessageMA(String(millis()) + F(" MA: add cmd = ") + String((uint8_t)cmd));
 
 	MA_commands[MA_commands_tail++] = cmd;
 	if(MA_commands_tail == sizeof(MA_commands)) MA_commands_tail = 0;
@@ -111,6 +114,6 @@ MA_commands_enum motionautomat_get_command(void){
 		if(++MA_commands_head == sizeof(MA_commands)) MA_commands_head = 0;
 	}
 	
-	DebugMessageMA(String(millis()) + F(" MA get cmd = ") + String((uint8_t)cmd));
+	DebugMessageMA(String(millis()) + F(" MA: get cmd = ") + String((uint8_t)cmd));
 	return cmd;
 }

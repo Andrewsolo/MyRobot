@@ -18,7 +18,6 @@
 #endif
 
 #define SONAR_MAX_DISTANCE 200	// Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
-#define SONAR_PING_TIMEOUT 50	// Если не получим отклик, то через это время будет отправлен еще один ping
 
 extern unsigned long sonar_pingTimer;
 extern unsigned long sonar_ping_result;

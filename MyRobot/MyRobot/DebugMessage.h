@@ -11,9 +11,9 @@
 
 #include "Arduino.h"
 
-#ifndef SIMULATOR
+#ifdef DEBUG
 #define DEBUG_MA
-//#define DEBUG_BD
+#define DEBUG_BD
 //#define DEBUG_SERVO
 //#define DEBUG_SERIAL
 #endif

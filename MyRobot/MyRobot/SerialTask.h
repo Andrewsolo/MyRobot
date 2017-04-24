@@ -9,8 +9,11 @@
 #ifndef SERIALHANDLER_H_
 #define SERIALHANDLER_H_
 
+#define SERIAL_DELAY 10
+
+extern unsigned long serial_Timer;
+
 void serial_init(void);
 void Task_SerialHandler(void);
-void serial_send_debug(void);
 
 #endif /* SERIALHANDLER_H_ */

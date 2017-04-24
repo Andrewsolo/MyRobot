@@ -24,7 +24,7 @@ void sonar_echoCheck(void);
 void Task_SonarHandler(void){
 
 	if (millis() >= sonar_pingTimer && sonar_isPingEnabled) {
-		sonar_pingTimer += SONAR_PING_TIMEOUT;
+		sonar_pingTimer = millis() + SONAR_PING_TIMEOUT;
 		sonar_isEchoChecked = false;
 #ifdef SIMULATOR
 		sonar_ping_result = 100;

@@ -22,9 +22,8 @@ MA_commands_enum MA_commands[MA_COMMANDS_BUFFER_SIZE];
 uint8_t MA_commands_head;
 uint8_t MA_commands_tail;
 
-#define MOTIONAUTOMAT_DELAY	50
+#define MOTIONAUTOMAT_DELAY	30	//50 Сделаем обработку быстрее, чем приход команд по bluetooth (50 мс)
 unsigned long motionautomat_Timer;
-
 
 MA_commands_enum motionautomat_get_command(void);
 
@@ -40,13 +39,11 @@ void motionautomat_init(void){
 void Task_MotionAutomat(void){
 
 	if (millis() >= motionautomat_Timer) {
-		motionautomat_Timer += MOTIONAUTOMAT_DELAY;
+		motionautomat_Timer = millis() + MOTIONAUTOMAT_DELAY;
 
 		if(MA_commands_head != MA_commands_tail){	// Если в буфере есть команды
 
 			MA_commands_enum cmd = motionautomat_get_command();
-
-			DebugMessageMA(String(millis()) + F(" MA command = ") + String((uint8_t)cmd));
 
 			if(cmd == MA_COMMAND_FORWARD){
 				barrierdetect_enable();
@@ -92,9 +89,11 @@ void Task_MotionAutomat(void){
 
 //==============================================================
 // Добавление команды в конец очереди
-void motionautomat_add_command(MA_commands_enum CMD){
+void motionautomat_add_command(MA_commands_enum cmd){
 
-	MA_commands[MA_commands_tail++] = CMD;
+	DebugMessageMA(String(millis()) + F(" MA add cmd = ") + String((uint8_t)cmd));
+
+	MA_commands[MA_commands_tail++] = cmd;
 	if(MA_commands_tail == sizeof(MA_commands)) MA_commands_tail = 0;
 	if(MA_commands_tail == MA_commands_head){
 		// затираем команду, которую не успели обработать
@@ -111,5 +110,7 @@ MA_commands_enum motionautomat_get_command(void){
 		MA_commands[MA_commands_head] = MA_COMMAND_IDLE;	// Необязательно, так как окажется вне очереди. Для отладки
 		if(++MA_commands_head == sizeof(MA_commands)) MA_commands_head = 0;
 	}
+	
+	DebugMessageMA(String(millis()) + F(" MA get cmd = ") + String((uint8_t)cmd));
 	return cmd;
 }

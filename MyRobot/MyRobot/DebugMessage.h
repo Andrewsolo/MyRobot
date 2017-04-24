@@ -11,8 +11,12 @@
 
 #include "Arduino.h"
 
+#ifndef SIMULATOR
 #define DEBUG_MA
 //#define DEBUG_BD
+//#define DEBUG_SERVO
+//#define DEBUG_SERIAL
+#endif
 
 #ifdef DEBUG
 	#define DebugMessage(Str) {Serial.println(Str);}
@@ -30,6 +34,18 @@
 	#define DebugMessageBD(Str) {Serial.println(Str);}
 #else
 	#define DebugMessageBD(Str) {}
+#endif
+
+#ifdef DEBUG_SERVO
+	#define DebugMessageSERVO(Str) {Serial.println(Str);}
+#else
+	#define DebugMessageSERVO(Str) {}
+#endif
+
+#ifdef DEBUG_SERIAL
+	#define DebugMessageSERIAL(Str) {Serial.println(Str);}
+#else
+	#define DebugMessageSERIAL(Str) {}
 #endif
 
 #endif /* DEBUGMESSAGE_H_ */

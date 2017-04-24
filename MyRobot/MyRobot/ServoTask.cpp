@@ -32,7 +32,7 @@ void servo_v_init(void){
 	servo_v.write(60);		// 100 - max?
 	delay(200);
 	servo_v.detach();
-	DebugMessage(String(millis()) + F(" ServoV positioned"));
+	DebugMessageSERVO(String(millis()) + F(" ServoV positioned"));
 }
 
 //==============================================================
@@ -48,7 +48,7 @@ void Task_ServoHandler(void){
 
 				servo_phase = SERVO_PHASE_STOPED;
 				servo_h_rotationTimer = millis() + SERVO_H_POSITIONING_DELAY;		// задержка на окончание поворота, так как нет датчика для этого
-				DebugMessage(String(millis()) + F(" Servo phase: ROTATE. Next position = ") + String(servo_h_position));
+				DebugMessageSERVO(String(millis()) + F(" Servo phase: ROTATE. Next position = ") + String(servo_h_position));
 				break;
 
 			case SERVO_PHASE_STOPED:
@@ -56,13 +56,13 @@ void Task_ServoHandler(void){
 
 				servo_phase = SERVO_PHASE_WAITING;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
-				DebugMessage(String(millis()) + F(" Servo phase: STOPED"));
+				DebugMessageSERVO(String(millis()) + F(" Servo phase: STOPED"));
 				break;
 
 			case SERVO_PHASE_WAITING:
 				servo_isWaiting = true;
 				servo_h_rotationTimer = millis() + SERVO_H_INTERRUPTION_STEP;
-				//DebugMessageLn(String(millis()) + F(" Servo phase: "));
+				//DebugMessageSERVOLn(String(millis()) + F(" Servo phase: "));
 				break;
 
 			default:

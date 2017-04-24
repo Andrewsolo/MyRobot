@@ -221,7 +221,7 @@
       </AvrGccCpp>
     </ToolchainSettings>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'SIMULATOR' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Simulator' ">
     <ToolchainSettings>
       <AvrGccCpp xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
         <avrgcc.common.Device>-mmcu=atmega328p -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.1.130\gcc\dev\atmega328p"</avrgcc.common.Device>
@@ -310,7 +310,7 @@
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
       </AvrGccCpp>
     </ToolchainSettings>
-    <OutputPath>bin\SIMULATOR\</OutputPath>
+    <OutputPath>bin\Simulator\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="include\core\Arduino.h">

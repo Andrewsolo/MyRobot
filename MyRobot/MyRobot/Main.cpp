@@ -31,6 +31,7 @@ void setup()
 
 
 	// Инициализация таймеров
+	serial_Timer = millis();
 	motionautomat_Timer = millis();
 	barrierdetect_Timer = millis();
 	servo_h_rotationTimer = millis();

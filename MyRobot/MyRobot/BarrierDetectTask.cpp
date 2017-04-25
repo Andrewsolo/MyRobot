@@ -194,5 +194,11 @@ void barrierdetect_enable(void){
 // отключаем детектор препятствий и снимаем ограничения скорости
 void barrierdetect_disable(void){
 	motors_set_max_speed(get_motors_max_speed(), false);
+	
+		for (uint8_t i=0;i<barrierdetect_get_servo_positions_cnt();i++){
+			barrierdetect_points[i].Distance = 0;
+		}
+	
+	
 	barrierdetect_isEnabled = false;
 }

@@ -59,22 +59,27 @@ void Task_MotionAutomat(void){
 				motors_go_forward_and_right();
 			}
 			else if(cmd == MA_COMMAND_BACKWARD){
+				barrierdetect_disable();
 				motors_go_backward();
 			}
 			else if(cmd == MA_COMMAND_BACKWARD_AND_LEFT){
+				barrierdetect_disable();
 				motors_go_backward_and_left();
 			}
 			else if(cmd == MA_COMMAND_BACKWARD_AND_RIGHT){
+				barrierdetect_disable();
 				motors_go_backward_and_right();
 			}
 			else if(cmd == MA_COMMAND_LEFT){
+				barrierdetect_disable();
 				motors_go_left();
 			}
 			else if(cmd == MA_COMMAND_RIGHT){
+				barrierdetect_disable();
 				motors_go_right();
 			}
 			else if(cmd == MA_COMMAND_STOP){
-				barrierdetect_disable();	// отключаем детектор препятствий и снимаем ограничения скорости
+				barrierdetect_disable();
 				motors_speed_down(MOTORS_STOP_STEP,MOTORS_STOP_STEP);
 			}
 			else if(cmd>=MA_COMMAND_SPEED_0 && cmd<=MA_COMMAND_SPEED_10){

@@ -66,7 +66,7 @@ uint8_t Motor::get_speed_corr(void)
 }
 
 void Motor::speed_up(uint8_t step){
-	if (Speed == 0) set_speed(MOTOR_SPEED_MIN);
+	if (Speed == 0 && MaxSpeed != 0) set_speed(MOTOR_SPEED_MIN);
 	else if (Speed + step <= MaxSpeed) set_speed(Speed+step);
 }
 

@@ -30,7 +30,7 @@ void Task_SonarHandler(void){
 		sonar_isEchoChecked = false;
 		sonar.ping_timer(sonar_echoCheck); // Send out the ping
 #else		
-		sonar_ping_result = 100;
+		sonar_ping_result = 20;
 		sonar_isEchoChecked = true;
 		sonar_isPingEnabled = false;
 #endif

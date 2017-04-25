@@ -62,10 +62,12 @@ void Task_BarrierDetection(void){
 					barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
 				}
 				else
+					#ifndef SIMULATOR
 					if(servo_get_position()!=BARRIERDETECT_PARK_POSITION){
 						DebugMessageBD(String(millis()) + F(" BD: IDLE. Parking"));
 						barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_PARKING;
 					}
+					#endif
 				break;
 				
 			//----------------------------------------------------				
@@ -107,7 +109,7 @@ void Task_BarrierDetection(void){
 
 			case BARRIERDETECT_PHASE_REACTION:
 				DebugMessageBD(String(millis()) + F(" BD: REACTION."));
-				barrierdetect_motor_speed_limitation();	//TODO Проблема в том, что при barrierdetect_isEnabled=false максимальная скорость не восстановится
+				barrierdetect_motor_speed_limitation();
 				barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
 				break;
 			
@@ -189,7 +191,8 @@ void barrierdetect_enable(void){
 }
 
 //==============================================================
+// отключаем детектор препятствий и снимаем ограничения скорости
 void barrierdetect_disable(void){
-	motors_set_max_speed(get_motors_max_speed(), false);	// Снимаем ограничения скорости
+	motors_set_max_speed(get_motors_max_speed(), false);
 	barrierdetect_isEnabled = false;
 }

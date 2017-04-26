@@ -19,16 +19,16 @@
 
 
 typedef struct strDistanceMeas{uint8_t Position; uint8_t Distance;};
-extern strDistanceMeas barrierdetect_points[];// = {90, 0, 135, 0, 90, 0, 45, 0};
+extern strDistanceMeas BD_points[];// = {90, 0, 135, 0, 90, 0, 45, 0};
 
 
-extern unsigned long barrierdetect_Timer;
-//extern boolean barrierdetect_isEnabled;
-extern int barrierdetect_distance;
+extern uint32_t BD_Timer;
+extern int BD_distance;
+extern boolean BD_isDistanceCalculated;
 
-void barrierdetect_init(void);
-void Task_BarrierDetection(void);
-uint8_t barrierdetect_get_distance();
-void barrierdetect_enable(void);
-void barrierdetect_disable(void);
+void	BD_init(void);
+void	BD_Task(void);
+uint8_t BD_get_distance();
+void	BD_enable(void);
+void	BD_disable(void);
 #endif /* BARRIERDETECTTASK_H_ */

@@ -9,9 +9,9 @@
 #ifndef SERIALHANDLER_H_
 #define SERIALHANDLER_H_
 
-extern unsigned long serial_Timer;
+extern uint32_t Serial_Timer;
 
-void serial_init(void);
-void Task_SerialHandler(void);
+void Serial_init(void);
+void Serial_Task(void);
 
 #endif /* SERIALHANDLER_H_ */

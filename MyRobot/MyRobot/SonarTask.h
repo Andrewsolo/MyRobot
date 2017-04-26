@@ -19,12 +19,12 @@
 
 #define SONAR_MAX_DISTANCE 200	// Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 
-extern unsigned long sonar_pingTimer;
-extern unsigned long sonar_ping_result;
-extern boolean sonar_isEchoChecked;
-extern boolean sonar_isPingEnabled;
+extern uint32_t Sonar_Timer;
+extern uint32_t Sonar_ping_result;
+extern boolean Sonar_isEchoChecked;
+extern boolean Sonar_isPingEnabled;
 
-void Task_SonarHandler(void);
+void Sonar_Task(void);
 
 
 #endif /* SONARTASK_H_ */

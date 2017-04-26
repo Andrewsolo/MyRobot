@@ -12,14 +12,15 @@
 #include "DebugMessage.h"
 
 #define BARRIERDETECT_DELAY 50
-unsigned long barrierdetect_Timer;
+uint32_t BD_Timer;
 
-strDistanceMeas barrierdetect_points[] = {90, 0, 135, 0, 90, 0, 45, 0};
-#define BARRIERDETECT_PARK_POSITION barrierdetect_points[0].Position
+strDistanceMeas BD_points[] = {90, 0, 120, 0, 90, 0, 60, 0};
+#define BARRIERDETECT_PARK_POSITION BD_points[0].Position
 
-int		barrierdetect_distance = 0;										// TODO перенести расчет sonar_distance в модуль sonar или servo
-uint8_t barrierdetect_pos_num = 0;
-boolean barrierdetect_isEnabled = false;
+int		BD_distance = 0;										// TODO перенести расчет sonar_distance в модуль sonar или servo
+uint8_t BD_pos_num = 0;
+boolean BD_isEnabled = false;
+boolean BD_isDistanceCalculated = false;
 
 enum phases{
 	BARRIERDETECT_PHASE_IDLE=0,
@@ -31,17 +32,17 @@ enum phases{
 	BARRIERDETECT_PHASE_REACTION,
 	BARRIERDETECT_PHASE_SERVO_PARKING,
 	BARRIERDETECT_PHASE_SERVO_WAIT_PARKED};
-phases barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
+phases BD_phase = BARRIERDETECT_PHASE_IDLE;
 
-uint8_t	barrierdetect_calculate_distance(void);
-void	barrierdetect_motor_speed_limitation(void);
-uint8_t barrierdetect_get_servo_positions_cnt(void);
+uint8_t	BD_calculate_distance(void);
+void	BD_motor_speed_limitation(void);
+uint8_t BD_get_servo_positions_cnt(void);
 
 //==============================================================
-void barrierdetect_init(void){
+void BD_init(void){
 	
 #ifndef SIMULATOR	
-	servo_v_init();
+	ServoV_init();
 #endif	
 	
 	//servo_go_position(BARRIERDETECT_PARK_POSITION);
@@ -50,22 +51,22 @@ void barrierdetect_init(void){
 }
 
 //==============================================================
-void Task_BarrierDetection(void){
+void BD_Task(void){
 
-	if (millis() >= barrierdetect_Timer) {
-		barrierdetect_Timer = millis() + BARRIERDETECT_DELAY;
+	if (millis() >= BD_Timer) {
+		BD_Timer = millis() + BARRIERDETECT_DELAY;
 		
-		switch(barrierdetect_phase){
+		switch(BD_phase){
 			case BARRIERDETECT_PHASE_IDLE:
-				if(barrierdetect_isEnabled){
-					DebugMessageBD(String(millis()) + F(" BD: IDLE. Enabled = ") + String(barrierdetect_isEnabled));
-					barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
+				if(BD_isEnabled){
+					DebugMessageBD(String(millis()) + F(" BD: IDLE. Enabled = ") + String(BD_isEnabled));
+					BD_phase = BARRIERDETECT_PHASE_SERVO_POSITIONING;
 				}
 				else
 					#ifndef SIMULATOR
-					if(servo_get_position()!=BARRIERDETECT_PARK_POSITION){
+					if(Servo_get_position()!=BARRIERDETECT_PARK_POSITION){
 						DebugMessageBD(String(millis()) + F(" BD: IDLE. Parking"));
-						barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_PARKING;
+						BD_phase = BARRIERDETECT_PHASE_SERVO_PARKING;
 					}
 					#endif
 				break;
@@ -73,57 +74,57 @@ void Task_BarrierDetection(void){
 			//----------------------------------------------------				
 			case BARRIERDETECT_PHASE_SERVO_POSITIONING:
 
-				DebugMessageBD(String(millis()) + F(" BD: SERVO_POSITIONING. Pos = ") + String(barrierdetect_points[barrierdetect_pos_num].Position));
+				DebugMessageBD(String(millis()) + F(" BD: SERVO_POSITIONING. Pos = ") + String(BD_points[BD_pos_num].Position));
 
-				servo_goto_position(barrierdetect_points[barrierdetect_pos_num].Position);	
-				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_STOP;
+				Servo_goto_position(BD_points[BD_pos_num].Position);	
+				BD_phase = BARRIERDETECT_PHASE_SERVO_WAIT_STOP;
 				break;
 				
 			case BARRIERDETECT_PHASE_SERVO_WAIT_STOP:
-				if(servo_isWaiting){
+				if(Servo_isWaiting){
 					DebugMessageBD(String(millis()) + F(" BD: SERVO_WAIT_STOP. Servo waiting."));
-					barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_PING;
+					BD_phase = BARRIERDETECT_PHASE_SONAR_PING;
 				}
 				break;
 								
 			case BARRIERDETECT_PHASE_SONAR_PING:
 				DebugMessageBD(String(millis()) + F(" BD: SONAR_PING."));
-				sonar_isPingEnabled = true;			
-				barrierdetect_phase = BARRIERDETECT_PHASE_SONAR_WAIT_ECHO;			
+				Sonar_isPingEnabled = true;			
+				BD_phase = BARRIERDETECT_PHASE_SONAR_WAIT_ECHO;			
 				break;
 						
 			case BARRIERDETECT_PHASE_SONAR_WAIT_ECHO:
-				if(sonar_isEchoChecked){
+				if(Sonar_isEchoChecked){
 					DebugMessageBD(String(millis()) + F(" BD: SONAR_WAIT_ECHO. Echo checked."));
-					barrierdetect_points[barrierdetect_pos_num].Distance = sonar_ping_result;					
-					if(++barrierdetect_pos_num >= barrierdetect_get_servo_positions_cnt()) barrierdetect_pos_num = 0; 
-					barrierdetect_phase = BARRIERDETECT_PHASE_CALCULATION;
+					BD_points[BD_pos_num].Distance = Sonar_ping_result;					
+					if(++BD_pos_num >= BD_get_servo_positions_cnt()) BD_pos_num = 0; 
+					BD_phase = BARRIERDETECT_PHASE_CALCULATION;
 				}
 				break;		
 				
 			case BARRIERDETECT_PHASE_CALCULATION:
-				barrierdetect_distance = barrierdetect_calculate_distance();
-				DebugMessageBD(String(millis()) + F(" BD: CALCULATION. Distance = ") + String(barrierdetect_distance));
-				barrierdetect_phase = BARRIERDETECT_PHASE_REACTION;
+				BD_distance = BD_calculate_distance();
+				DebugMessageBD(String(millis()) + F(" BD: CALCULATION. Distance = ") + String(BD_distance));
+				BD_phase = BARRIERDETECT_PHASE_REACTION;
 				break;								
 
 			case BARRIERDETECT_PHASE_REACTION:
 				DebugMessageBD(String(millis()) + F(" BD: REACTION."));
-				barrierdetect_motor_speed_limitation();
-				barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
+				BD_motor_speed_limitation();
+				BD_phase = BARRIERDETECT_PHASE_IDLE;
 				break;
 			
 			//----------------------------------------------------------
 			case BARRIERDETECT_PHASE_SERVO_PARKING:
 				DebugMessageBD(String(millis()) + F(" BD: SERVO_PARKING."));
-				servo_goto_position(BARRIERDETECT_PARK_POSITION);
-				barrierdetect_phase = BARRIERDETECT_PHASE_SERVO_WAIT_PARKED;
+				Servo_goto_position(BARRIERDETECT_PARK_POSITION);
+				BD_phase = BARRIERDETECT_PHASE_SERVO_WAIT_PARKED;
 				break;
 
 			case BARRIERDETECT_PHASE_SERVO_WAIT_PARKED:
-				if(servo_isWaiting){
+				if(Servo_isWaiting){
 					DebugMessageBD(String(millis()) + F(" BD: SERVO_WAIT_PARKED. Servo waiting."));
-					barrierdetect_phase = BARRIERDETECT_PHASE_IDLE;
+					BD_phase = BARRIERDETECT_PHASE_IDLE;
 				}
 				break;
 
@@ -138,39 +139,40 @@ void Task_BarrierDetection(void){
 
 //==============================================================
 // Нахождение минимального значения дистанции
-uint8_t barrierdetect_calculate_distance(void){
+uint8_t BD_calculate_distance(void){
 	uint8_t distance = SONAR_MAX_DISTANCE;
 		
-	for (uint8_t i=0;i<barrierdetect_get_servo_positions_cnt();i++){
-		if (barrierdetect_points[i].Distance < distance) distance = barrierdetect_points[i].Distance;
+	for (uint8_t i=0;i<BD_get_servo_positions_cnt();i++){
+		if (BD_points[i].Distance < distance) distance = BD_points[i].Distance;
 	}
+	BD_isDistanceCalculated = true;
 	return distance;
 }
 
 
 //==============================================================
-uint8_t barrierdetect_get_distance(){
-	return barrierdetect_distance;	
+uint8_t BD_get_distance(){
+	return BD_distance;	
 }
 
 
 //==============================================================
 // Замедление в зависимости от расстояния до препятствия
-void barrierdetect_motor_speed_limitation(void){
+void BD_motor_speed_limitation(void){
 	
-	if (barrierdetect_distance >= BARRIERDETECT_DISTANCE_MAX){
+	if (BD_distance >= BARRIERDETECT_DISTANCE_MAX){
 		// максимальная скорость
 		motors_set_max_speed(get_motors_max_speed(), false);
 	}
-	else if (barrierdetect_distance < BARRIERDETECT_DISTANCE_MIN && get_motors_max_speed() > 0) {
+	else if (BD_distance < BARRIERDETECT_DISTANCE_MIN && get_motors_max_speed() > 0) {
 		// остановка
 		motors_set_max_speed(0, true);
 	}
-	else if (barrierdetect_distance < BARRIERDETECT_DISTANCE_MID && get_motors_max_speed() > BARRIERDETECT_SPEED_LOWEST) {
+	else if (BD_distance < BARRIERDETECT_DISTANCE_MID && get_motors_max_speed() > BARRIERDETECT_SPEED_LOWEST) {
 		// низкая скорость
 		motors_set_max_speed(BARRIERDETECT_SPEED_LOWEST, true);
 	}
-	else if (barrierdetect_distance < BARRIERDETECT_DISTANCE_MAX && get_motors_max_speed() > BARRIERDETECT_SPEED_LOWER) {
+	else if (BD_distance < BARRIERDETECT_DISTANCE_MAX && get_motors_max_speed() > BARRIERDETECT_SPEED_LOWER) {
 		// пониженная скорость
 		motors_set_max_speed(BARRIERDETECT_SPEED_LOWER, true);
 	}
@@ -179,26 +181,25 @@ void barrierdetect_motor_speed_limitation(void){
 }
 
 //==============================================================
-uint8_t barrierdetect_get_servo_positions_cnt(void)
+uint8_t BD_get_servo_positions_cnt(void)
 {
-	return sizeof(barrierdetect_points)/sizeof(strDistanceMeas);
+	return sizeof(BD_points)/sizeof(strDistanceMeas);
 
 }
 
 //==============================================================
-void barrierdetect_enable(void){
-	barrierdetect_isEnabled = true;	
+void BD_enable(void){
+	BD_isEnabled = true;	
 }
 
 //==============================================================
 // отключаем детектор препятствий и снимаем ограничения скорости
-void barrierdetect_disable(void){
+void BD_disable(void){
 	motors_set_max_speed(get_motors_max_speed(), false);
 	
-		for (uint8_t i=0;i<barrierdetect_get_servo_positions_cnt();i++){
-			barrierdetect_points[i].Distance = 0;
-		}
-	
-	
-	barrierdetect_isEnabled = false;
+	for (uint8_t i=0;i<BD_get_servo_positions_cnt();i++)
+		BD_points[i].Distance = 0;
+	BD_isDistanceCalculated = false;
+	BD_pos_num = 0;
+	BD_isEnabled = false;
 }

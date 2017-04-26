@@ -25,9 +25,9 @@
  * -gstabs -Wa,-ahlmsd=output.lst -dp -fverbose-asm -O2
  * on the original C function
  *
- * unsigned long pulseInSimpl(volatile uint8_t *port, uint8_t bit, uint8_t stateMask, unsigned long maxloops)
+ * uint32_t pulseInSimpl(volatile uint8_t *port, uint8_t bit, uint8_t stateMask, uint32_t maxloops)
  * {
- *     unsigned long width = 0;
+ *     uint32_t width = 0;
  *     // wait for any previous pulse to end
  *     while ((*port & bit) == stateMask)
  *         if (--maxloops == 0)
@@ -71,7 +71,7 @@ countPulseASM:
 .L__stack_usage = 6
     mov r30,r24  ;  port, port   ;  2 *movhi/1  [length = 2]
     mov r31,r25  ;  port, port
-/*     unsigned long width = 0;
+/*     uint32_t width = 0;
 ***     // wait for any previous pulse to end
 ***     while ((*port & bit) == stateMask)
 */

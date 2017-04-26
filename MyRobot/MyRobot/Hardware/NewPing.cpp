@@ -72,8 +72,8 @@ unsigned int NewPing::ping(unsigned int max_cm_distance) {
 }
 
 
-unsigned long NewPing::ping_cm(unsigned int max_cm_distance) {
-	unsigned long echoTime = NewPing::ping(max_cm_distance); // Calls the ping method and returns with the ping echo distance in uS.
+uint32_t NewPing::ping_cm(unsigned int max_cm_distance) {
+	uint32_t echoTime = NewPing::ping(max_cm_distance); // Calls the ping method and returns with the ping echo distance in uS.
 #if ROUNDING_ENABLED == false
 	return (echoTime / US_ROUNDTRIP_CM);              // Call the ping method and returns the distance in centimeters (no rounding).
 #else
@@ -82,8 +82,8 @@ unsigned long NewPing::ping_cm(unsigned int max_cm_distance) {
 }
 
 
-unsigned long NewPing::ping_in(unsigned int max_cm_distance) {
-	unsigned long echoTime = NewPing::ping(max_cm_distance); // Calls the ping method and returns with the ping echo distance in uS.
+uint32_t NewPing::ping_in(unsigned int max_cm_distance) {
+	uint32_t echoTime = NewPing::ping(max_cm_distance); // Calls the ping method and returns with the ping echo distance in uS.
 #if ROUNDING_ENABLED == false
 	return (echoTime / US_ROUNDTRIP_IN);              // Call the ping method and returns the distance in inches (no rounding).
 #else
@@ -92,10 +92,10 @@ unsigned long NewPing::ping_in(unsigned int max_cm_distance) {
 }
 
 
-unsigned long NewPing::ping_median(uint8_t it, unsigned int max_cm_distance) {
+uint32_t NewPing::ping_median(uint8_t it, unsigned int max_cm_distance) {
 	unsigned int uS[it], last;
 	uint8_t j, i = 0;
-	unsigned long t;
+	uint32_t t;
 	uS[0] = NO_ECHO;
 
 	while (i < it) {
@@ -210,9 +210,9 @@ boolean NewPing::check_timer() {
 	if (micros() > _max_time) { // Outside the time-out limit.
 		timer_stop();           // Disable timer interrupt
 		// Доработка начало
-		ping_result = (micros() - (_max_time - _maxEchoTime) - PING_TIMER_OVERHEAD);
-		return true;
-		//return false;           // Cancel ping timer.
+		//ping_result = (micros() - (_max_time - _maxEchoTime) - PING_TIMER_OVERHEAD);
+		//return true;
+		return false;           // Cancel ping timer.
 		// Доработка конец
 	}
 
@@ -237,8 +237,8 @@ boolean NewPing::check_timer() {
 // Variables used for timer functions
 void (*intFunc)();
 void (*intFunc2)();
-unsigned long _ms_cnt_reset;
-volatile unsigned long _ms_cnt;
+uint32_t _ms_cnt_reset;
+volatile uint32_t _ms_cnt;
 #if defined(__arm__) && defined(TEENSYDUINO)
 	IntervalTimer itimer;
 #endif
@@ -260,7 +260,7 @@ void NewPing::timer_us(unsigned int frequency, void (*userFunc)(void)) {
 }
 
 
-void NewPing::timer_ms(unsigned long frequency, void (*userFunc)(void)) {
+void NewPing::timer_ms(uint32_t frequency, void (*userFunc)(void)) {
 	intFunc = NewPing::timer_ms_cntdwn;  // Timer events are sent here once every ms till user's frequency is reached.
 	intFunc2 = userFunc;                 // User's function to call when user's frequency is reached.
 	_ms_cnt = _ms_cnt_reset = frequency; // Current ms counter and reset value.

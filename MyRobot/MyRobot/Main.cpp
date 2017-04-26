@@ -20,31 +20,26 @@ void setup()
 	digitalWrite(PIN_RESET, 1);
 
 	// Инициализация оборудования
-	serial_init();
-	motionautomat_init();
-	barrierdetect_init();
-
-	motors_correctspeed(-3);
+	Serial_init();
+	MA_init();
+	BD_init();
+	motors_init();
 	
-	//delay(1000);
-	
-
-
 	// Инициализация таймеров
-	serial_Timer = millis();
-	motionautomat_Timer = millis();
-	barrierdetect_Timer = millis();
-	servo_h_rotationTimer = millis();
-	sonar_pingTimer = millis();	
+	MA_Timer		= millis();
+	BD_Timer		= millis();
+	Serial_Timer	= millis();
+	Servo_Timer		= millis();
+	Sonar_Timer		= millis();	
 }
 
 void loop()
 {
-	Task_SerialHandler();
-	Task_MotionAutomat();
-	Task_BarrierDetection();
-	Task_ServoHandler();
-	Task_SonarHandler();
+	Serial_Task();
+	MA_Task();
+	BD_Task();
+	Servo_Task();
+	Sonar_Task();
 }
 
 //==============================================================

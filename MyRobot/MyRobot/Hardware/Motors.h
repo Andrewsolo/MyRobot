@@ -23,6 +23,7 @@
 #define is_motors_in_right_direction(r_dir,l_dir) ((motor_right.get_direction() == r_dir) && (motor_left.get_direction() == l_dir)) || (motors_get_speed()==0)
 #define motors_set_direction(r_dir,l_dir) {motor_right.set_direction(r_dir);motor_left.set_direction(l_dir);}
 
+void	motors_init(void);
 void	motors_speed_up(uint8_t, uint8_t);
 void	motors_speed_down(uint8_t, uint8_t);
 uint8_t motors_get_speed(void);

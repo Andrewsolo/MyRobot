@@ -205,17 +205,17 @@ class NewPing {
 	public:
 		NewPing(uint8_t trigger_pin, uint8_t echo_pin, unsigned int max_cm_distance = MAX_SENSOR_DISTANCE);
 		unsigned int ping(unsigned int max_cm_distance = 0);
-		unsigned long ping_cm(unsigned int max_cm_distance = 0);
-		unsigned long ping_in(unsigned int max_cm_distance = 0);
-		unsigned long ping_median(uint8_t it = 5, unsigned int max_cm_distance = 0);
+		uint32_t ping_cm(unsigned int max_cm_distance = 0);
+		uint32_t ping_in(unsigned int max_cm_distance = 0);
+		uint32_t ping_median(uint8_t it = 5, unsigned int max_cm_distance = 0);
 		static unsigned int convert_cm(unsigned int echoTime);
 		static unsigned int convert_in(unsigned int echoTime);
 #if TIMER_ENABLED == true
 		void ping_timer(void (*userFunc)(void), unsigned int max_cm_distance = 0);
 		boolean check_timer();
-		unsigned long ping_result;
+		uint32_t ping_result;
 		static void timer_us(unsigned int frequency, void (*userFunc)(void));
-		static void timer_ms(unsigned long frequency, void (*userFunc)(void));
+		static void timer_ms(uint32_t frequency, void (*userFunc)(void));
 		static void timer_stop();
 #endif
 	private:
@@ -238,7 +238,7 @@ class NewPing {
 		uint8_t _echoPin;
 #endif
 		unsigned int _maxEchoTime;
-		unsigned long _max_time;
+		uint32_t _max_time;
 };
 
 

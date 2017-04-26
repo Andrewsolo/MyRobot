@@ -33,10 +33,10 @@ enum MA_commands_enum{
 	MA_COMMAND_SPEED_9,
 	MA_COMMAND_SPEED_10};
 
-extern unsigned long motionautomat_Timer;
+extern uint32_t MA_Timer;
 
-void motionautomat_init(void);
-void Task_MotionAutomat(void);
-void motionautomat_add_command(MA_commands_enum);
+void MA_init(void);
+void MA_Task(void);
+void MA_add_command(MA_commands_enum);
 
 #endif /* MOTIONAUTOMATTASK_H_ */

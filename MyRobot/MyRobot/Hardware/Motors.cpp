@@ -13,6 +13,12 @@ Motor motor_left(MOTOR_L_DIR_PIN, MOTOR_L_SPD_PIN);
 uint8_t motors_max_speed = MOTOR_SPEED_MAX;
 
 //========================================================
+void motors_init(void){
+	
+	motors_correctspeed(-3);	
+}
+
+//========================================================
 void motors_speed_up(uint8_t step_r, uint8_t step_l){
 	uint8_t right_speed = motor_right.get_speed();
 	uint8_t left_speed = motor_left.get_speed();

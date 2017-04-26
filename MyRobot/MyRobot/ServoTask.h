@@ -22,13 +22,13 @@
 #define SERVO_H_POS_MIN (10 + SERVO_H_POS_CORRECTION)
 #define SERVO_H_POS_MAX (170 + SERVO_H_POS_CORRECTION)
 
-extern boolean servo_isWaiting;
-extern unsigned long servo_h_rotationTimer;
+extern boolean Servo_isWaiting;
+extern uint32_t Servo_Timer;
 
-void servo_v_init(void);
-void Task_ServoHandler(void);
-uint8_t servo_get_position(void);
-void servo_goto_position(uint8_t);
-uint8_t servo_positions_cnt(void);
+void	ServoV_init(void);
+void	Servo_Task(void);
+uint8_t Servo_get_position(void);
+void	Servo_goto_position(uint8_t);
+uint8_t Servo_positions_cnt(void);
 
 #endif /* SERVOTASK_H_ */
